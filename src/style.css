@@ -259,22 +259,34 @@ header {
 /* ── Hazard Stripe ── */
 .hazard-stripe { height: 8px; background: repeating-linear-gradient(115deg, var(--secondary) 0 14px, var(--secondary) 14px 19px, var(--primary) 19px 34px, var(--primary) 34px 38px); }
 
-/* ── Differentials (Escuro - Cor Terra) ── */
-.differentials { background-color: var(--earth); color: #ffffff; padding: 3rem 0; }
-.differentials svg { color: var(--primary); }
-.differentials-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 1.25rem;
+/* ── Differentials (Marquee Infinito) ── */
+.differentials {
+  background-color: var(--earth); color: #ffffff; padding: 2rem 0;
+  overflow: hidden; pointer-events: none; user-select: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 }
-@media (min-width: 640px) { .differentials-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 768px) { .differentials-grid { grid-template-columns: repeat(5, 1fr); padding: 0 2rem; } }
-.diff-item { display: flex; align-items: center; gap: 0.75rem; }
+.differentials svg { color: var(--primary); }
+.differentials-track {
+  display: flex; width: max-content; will-change: transform;
+  animation: marquee 35s linear infinite;
+}
+.differentials-track.paused { animation-play-state: paused !important; }
+@media (max-width: 767px) { .differentials-track { animation-duration: 20s; } }
+.differentials-group {
+  display: flex; gap: 4rem; padding-right: 4rem; width: max-content;
+}
+@media (max-width: 767px) { .differentials-group { gap: 2rem; padding-right: 2rem; } }
+.diff-item { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
 .diff-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; max-width: 145px; }
 @media (min-width: 640px) { .diff-item span { font-size: 0.875rem; } }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .differentials { -webkit-mask-image: none; mask-image: none; pointer-events: auto; user-select: auto; }
+  .differentials-track { animation: none; width: 100%; justify-content: center; flex-wrap: wrap; gap: 1.5rem; }
+  .differentials-group { padding-right: 0; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+  .differentials-group[aria-hidden="true"] { display: none; }
+}
 
 /* ── Services (Muted - Suave) ── */
 .services {

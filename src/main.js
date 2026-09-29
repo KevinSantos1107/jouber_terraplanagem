@@ -237,4 +237,20 @@ document.addEventListener("DOMContentLoaded", () => {
       formSuccess.style.display = "block";
     }, 400);
   });
+
+  // ── Marquee Intersection Observer ──
+  const differentialsTrack = document.querySelector('.differentials-track');
+  const differentialsSection = document.querySelector('.differentials');
+  if (differentialsTrack && differentialsSection) {
+    const diffObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          differentialsTrack.classList.remove('paused');
+        } else {
+          differentialsTrack.classList.add('paused');
+        }
+      });
+    }, { rootMargin: '50px' });
+    diffObserver.observe(differentialsSection);
+  }
 });
