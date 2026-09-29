@@ -261,32 +261,29 @@ header {
 
 /* ── Differentials (Marquee Infinito) ── */
 .differentials {
-  background-color: var(--earth); color: #ffffff; padding: 2rem 0;
+  background-color: var(--earth); color: #ffffff; padding: 1.5rem 0;
   overflow: hidden; pointer-events: none; user-select: none;
   -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  display: block; width: 100%; white-space: nowrap;
 }
-.differentials svg { color: var(--primary); }
+.differentials svg { color: var(--primary); flex-shrink: 0; }
 .differentials-track {
-  display: flex; width: max-content; will-change: transform;
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
+  width: max-content; will-change: transform;
   animation: marquee 35s linear infinite;
 }
 .differentials-track.paused { animation-play-state: paused !important; }
 @media (max-width: 767px) { .differentials-track { animation-duration: 20s; } }
 .differentials-group {
-  display: flex; gap: 4rem; padding-right: 4rem; width: max-content;
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
+  gap: 4rem; padding-right: 4rem; width: max-content;
 }
 @media (max-width: 767px) { .differentials-group { gap: 2rem; padding-right: 2rem; } }
-.diff-item { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-.diff-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; max-width: 145px; }
+.diff-item { display: flex; flex-direction: row; align-items: center; gap: 0.75rem; flex-shrink: 0; white-space: nowrap; }
+.diff-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; display: inline-block; }
 @media (min-width: 640px) { .diff-item span { font-size: 0.875rem; } }
 @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .differentials { -webkit-mask-image: none; mask-image: none; pointer-events: auto; user-select: auto; }
-  .differentials-track { animation: none; width: 100%; justify-content: center; flex-wrap: wrap; gap: 1.5rem; }
-  .differentials-group { padding-right: 0; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
-  .differentials-group[aria-hidden="true"] { display: none; }
-}
 
 /* ── Services (Muted - Suave) ── */
 .services {
