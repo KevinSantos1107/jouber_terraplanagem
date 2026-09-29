@@ -209,12 +209,18 @@ header {
 
 .hero {
   position: relative;
-  min-height: 100svh;
+  /* Mobile: height do conteúdo + espaço, sem forçar 100vh que causa vazio */
+  min-height: clamp(520px, 100svh, 100svh);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
 }
-@media (min-width: 768px) { .hero { min-height: 680px; align-items: center; } }
+@media (min-width: 768px) {
+  .hero {
+    min-height: clamp(600px, 90vh, 860px);
+    align-items: center;
+  }
+}
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -245,22 +251,28 @@ header {
   width: 100%;
   max-width: 90rem;
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
+  /* Mobile: padding-top pequeno (conteúdo já alinhado ao fundo via flex-end) */
+  padding: 1.5rem 1.25rem 2.5rem;
   color: #ffffff;
 }
-@media (min-width: 768px) { .hero-content { padding: 8rem 2rem 0; } }
+@media (min-width: 768px) {
+  /* Desktop/tablet: padding-top generoso para não colar no header */
+  .hero-content { padding: clamp(3rem, 8vw, 7rem) 2rem 3rem; }
+}
 .hero-text { max-width: 680px; }
-.hero-subtitle { display: flex; align-items: center; gap: 0.5rem; }
+.hero-subtitle { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
 .accent-line { display: inline-block; height: 4px; width: 32px; background-color: var(--primary); }
-.hero h1 { font-size: clamp(3rem, 5.8vw, 6.25rem); margin-top: 1rem; }
-.hero-desc { margin-top: 1.5rem; font-size: 1rem; font-weight: 500; max-width: 32rem; }
-@media (min-width: 768px) { .hero-desc { font-size: 1.125rem; } }
-.hero-cta-wrapper { margin-top: 1.75rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+/* Título um pouco menor no mobile para caber na dobra */
+.hero h1 { font-size: clamp(2.5rem, 8vw, 6.25rem); margin-top: 0.625rem; }
+.hero-desc { margin-top: 0.875rem; font-size: 0.9375rem; font-weight: 500; max-width: 32rem; }
+@media (min-width: 768px) { .hero-desc { font-size: 1.125rem; margin-top: 1.25rem; } }
+.hero-cta-wrapper { margin-top: 1.25rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.625rem; }
 @media (min-width: 640px) { .hero-cta-wrapper { flex-direction: row; align-items: center; gap: 1.25rem; } }
-.hero-cta-note { font-size: 1rem; font-weight: 600; color: #ffffff; }
+.hero-cta-note { font-size: 0.9375rem; font-weight: 600; color: #ffffff; }
 .hero-badge { display: inline-block; padding: 0.25rem 0.5rem; border: 1px solid var(--primary); color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; width: fit-content; }
 .hero-excavator-icon { height: 24px; width: auto; margin-left: 0.5rem; }
-.hero-agenda { margin-top: 1rem; font-size: 0.875rem; font-style: italic; color: #d1d5db; }
+.hero-agenda { margin-top: 0.75rem; font-size: 0.8125rem; font-style: italic; color: #d1d5db; }
+
 
 .scroll-down-btn {
   position: absolute; right: 2rem; bottom: 2rem; display: none; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; animation: bounce 2s infinite; color: #ffffff;

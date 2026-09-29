@@ -154,19 +154,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Floating WA Visibility ──
   const floatingWa = document.querySelector('.floating-whatsapp');
-  const heroSection = document.getElementById('inicio');
   if (floatingWa) {
-    const toggleFloating = () => {
-      // Show only after the user scrolls past the hero (first section)
-      const heroBottom = heroSection ? heroSection.offsetTop + heroSection.offsetHeight : 300;
-      if (window.scrollY >= heroBottom - 80) {
-        floatingWa.classList.add('visible');
-      } else {
-        floatingWa.classList.remove('visible');
-      }
+    let shown = false;
+
+    const showFloating = () => {
+      if (shown) return;
+      shown = true;
+      floatingWa.classList.add('visible');
+      // Once shown, no need to keep the scroll listener
+      window.removeEventListener('scroll', onScroll);
     };
-    window.addEventListener('scroll', toggleFloating, { passive: true });
-    toggleFloating();
+
+    const onScroll = () => {
+      // Show after scrolling ~15% of the viewport height
+      if (window.scrollY >= window.innerHeight * 0.15) showFloating();
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
 // ── Render Services ──
