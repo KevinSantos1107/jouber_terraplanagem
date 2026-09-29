@@ -1,5 +1,8 @@
-const WHATSAPP_NUMBER = "5531996686933";
-function whatsappUrl(text = "Olá! Gostaria de solicitar um orçamento sem compromisso.") {
+import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
+
+const FORM_ENDPOINT = import.meta.env?.VITE_FORM_ENDPOINT || '';
+
+export function whatsappUrl(text = "Olá! Gostaria de solicitar um orçamento sem compromisso.") {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
@@ -52,10 +55,40 @@ const services = [
       "Preparação do espaço para o projeto",
       "Avaliação de materiais a retirar"
     ]
+  },
+  {
+    num: "05",
+    name: "Terraplanagem residencial",
+    desc: "Preparo e nivelamento de terrenos para construção residencial, garantindo base firme e drenagem adequada.",
+    image: "/assets/service-residential.webp",
+    alt: "Foto SUBSTITUIR - Terraplanagem residencial",
+    whatsappMsg: "Olá! Quero um orçamento para terraplanagem residencial."
+  },
+  {
+    num: "06",
+    name: "Remoção de entulho e materiais",
+    desc: "Coleta e descarte correto de entulho, terra e materiais de obra, deixando o local pronto para o próximo passo.",
+    image: "/assets/service-debris.webp",
+    alt: "Foto SUBSTITUIR - Remoção de entulho",
+    whatsappMsg: "Olá! Quero um orçamento para remoção de entulho e materiais."
   }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Toggle Sections based on site.js
+  if (!sections.testimonials.enabled) {
+    const tSec = document.getElementById("depoimentos");
+    if (tSec) tSec.style.display = 'none';
+  }
+  if (!sections.videos.enabled) {
+    const vSec = document.getElementById("videos");
+    if (vSec) vSec.style.display = 'none';
+  }
+  if (!sections.partners.enabled) {
+    const pSec = document.getElementById("parceiros");
+    if (pSec) pSec.style.display = 'none';
+  }
+
   // ── Scroll Progress ──
   const progressBar = document.getElementById("progress-bar");
   const updateProgress = () => {
@@ -89,10 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Hero Image Loader ──
   const heroImg = document.querySelector(".hero-bg");
-  if (heroImg.complete) {
-    heroImg.classList.add("loaded");
-  } else {
-    heroImg.addEventListener("load", () => heroImg.classList.add("loaded"));
+  if (heroImg) {
+    if (heroImg.complete) {
+      heroImg.classList.add("loaded");
+    } else {
+      heroImg.addEventListener("load", () => heroImg.classList.add("loaded"));
+    }
   }
 
   // ── Intersection Observer for Reveals ──
@@ -118,19 +153,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Render Services ──
   const servicesGrid = document.querySelector(".services-grid");
-  const dialog = document.getElementById("service-dialog");
-  const dialogImg = document.getElementById("dialog-img");
-  const dialogNum = document.getElementById("dialog-num");
-  const dialogTitle = document.getElementById("dialog-title");
-  const dialogDesc = document.getElementById("dialog-desc");
-  const dialogDetails = document.getElementById("dialog-details");
-  const dialogClose = document.getElementById("dialog-close");
-  const dialogCta = document.getElementById("dialog-cta");
-  let currentService = null;
-
+  
   services.forEach((s) => {
     const article = document.createElement("article");
     article.className = "service-card";
+    
+    // Instead of opening a dialog, the entire card triggers WhatsApp directly
+    const wpUrl = whatsappUrl(`Olá! Quero um orçamento para ${s.name.toLowerCase()}.`);
+    
     article.innerHTML = `
       <div class="service-img-wrapper">
         <img src="${s.image}" alt="${s.alt}" class="service-img" loading="lazy" />
@@ -138,65 +168,84 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="service-content">
         <div class="service-num-row">
           <span>/${s.num}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="service-arrow"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </div>
         <h3>${s.name}</h3>
         <p>${s.desc}</p>
-        <button class="service-details-btn">
-          Ver detalhes
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-      </div>
-      <div class="service-footer">
-        <a href="${whatsappUrl(`Olá! Quero um orçamento para ${s.name.toLowerCase()}.`)}" target="_blank" class="service-quote">
-          Solicitar orçamento
+        <a href="${wpUrl}" target="_blank" class="service-details-btn">
+          Pedir orçamento de ${s.name.toLowerCase()}
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </a>
       </div>
     `;
 
-    const openDialog = () => {
-      currentService = s;
-      dialogImg.src = s.image;
-      dialogImg.alt = s.alt;
-      dialogNum.textContent = `/${s.num}`;
-      dialogTitle.textContent = s.name;
-      dialogDesc.textContent = s.desc;
-      dialogDetails.innerHTML = s.details.map(d => `
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-          ${d}
-        </li>
-      `).join("");
-      
-      dialogCta.onclick = () => {
-        window.open(whatsappUrl(`Olá! Quero um orçamento para ${s.name.toLowerCase()}.`), "_blank");
-      };
-      
-      dialog.showModal();
-    };
-
-    article.querySelector(".service-img-wrapper").addEventListener("click", openDialog);
-    article.querySelector(".service-content").addEventListener("click", openDialog);
+    article.addEventListener("click", () => {
+      window.open(wpUrl, "_blank");
+    });
     
-    servicesGrid.appendChild(article);
+    if (servicesGrid) servicesGrid.appendChild(article);
   });
 
-  dialogClose.addEventListener("click", () => dialog.close());
-  dialog.addEventListener("click", (e) => {
-    if (e.target === dialog) dialog.close();
-  });
+  // Attach WA link to standalone buttons
+  const assignWaLink = (id) => {
+    const btn = document.getElementById(id);
+    if(btn) {
+      btn.addEventListener("click", () => {
+        window.open(whatsappUrl(), "_blank");
+      });
+    }
+  }
+  assignWaLink('btn-services-wa');
+  assignWaLink('btn-results-wa');
+  assignWaLink('btn-process-wa');
 
   // ── Compare Sliders ──
   const sliders = document.querySelectorAll(".compare-slider");
+  
+  const compareObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const slider = entry.target;
+        const container = slider.parentElement;
+        const after = container.querySelector(".compare-after");
+        const line = container.querySelector(".compare-line");
+        
+        after.style.transition = "clip-path 0.5s ease-in-out";
+        line.style.transition = "left 0.5s ease-in-out";
+        
+        setTimeout(() => {
+          after.style.setProperty("--reveal", "75%");
+          line.style.setProperty("--reveal", "75%");
+          slider.value = 75;
+          
+          setTimeout(() => {
+            after.style.setProperty("--reveal", "50%");
+            line.style.setProperty("--reveal", "50%");
+            slider.value = 50;
+            
+            setTimeout(() => {
+              after.style.transition = "none";
+              line.style.transition = "none";
+            }, 500);
+          }, 500);
+        }, 500);
+        
+        compareObserver.unobserve(slider);
+      }
+    });
+  }, { threshold: 0.5 });
+
   sliders.forEach(slider => {
     const container = slider.parentElement;
     const after = container.querySelector(".compare-after");
     const line = container.querySelector(".compare-line");
     
     const bgImg = container.querySelector(".compare-img-bg");
-    if (bgImg.complete) bgImg.classList.remove("skeleton");
-    else bgImg.addEventListener("load", () => bgImg.classList.remove("skeleton"));
+    if (bgImg) {
+      if (bgImg.complete) bgImg.classList.remove("skeleton");
+      else bgImg.addEventListener("load", () => bgImg.classList.remove("skeleton"));
+    }
+    
+    compareObserver.observe(slider);
 
     slider.addEventListener("input", (e) => {
       const val = e.target.value;
@@ -205,38 +254,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Phone mask
+  const phoneInput = document.getElementById('phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function (e) {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+      e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+    });
+  }
+
   // ── Form Submission ──
   const form = document.getElementById("quote-form");
-  const submitBtn = document.getElementById("submit-btn");
-  const btnText = submitBtn.querySelector(".btn-text");
-  const spinner = submitBtn.querySelector(".spinner");
-  const formSuccess = document.getElementById("form-success");
+  if (form) {
+    const submitBtn = document.getElementById("submit-btn");
+    const btnText = submitBtn.querySelector(".btn-text");
+    const spinner = submitBtn.querySelector(".spinner");
+    const formSuccess = document.getElementById("form-success");
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (!form.checkValidity()) return;
-    
-    const name = document.getElementById("name").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const service = document.getElementById("service").value;
-    
-    submitBtn.disabled = true;
-    btnText.style.display = "none";
-    spinner.style.display = "inline-block";
-    
-    setTimeout(() => {
-      window.open(
-        whatsappUrl(`Olá! Meu nome é ${name}. Meu WhatsApp é ${phone}. Gostaria de um orçamento para ${service}.`),
-        "_blank"
-      );
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
       
-      submitBtn.disabled = false;
-      btnText.style.display = "inline-flex";
-      spinner.style.display = "none";
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const service = document.getElementById("service").value;
+      const city = document.getElementById("city")?.value.trim();
       
-      formSuccess.style.display = "block";
-    }, 400);
-  });
+      submitBtn.disabled = true;
+      btnText.style.display = "none";
+      spinner.style.display = "inline-block";
+      
+      let msg = `Olá! Meu nome é ${name}. Meu WhatsApp é ${phone}. Gostaria de um orçamento para ${service}.`;
+      if (city) msg += ` A cidade/bairro é ${city}.`;
+      msg += ` Contato via site.`;
+      
+      const formData = { name, phone, service, city, source: 'site' };
+
+      // Optional async fetch
+      if (FORM_ENDPOINT) {
+        fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        }).catch(err => console.error(err));
+      }
+
+      setTimeout(() => {
+        window.open(whatsappUrl(msg), "_blank");
+        
+        submitBtn.disabled = false;
+        btnText.style.display = "inline-flex";
+        spinner.style.display = "none";
+        
+        formSuccess.style.display = "block";
+      }, 400);
+    });
+  }
 
   // ── Marquee Intersection Observer ──
   const differentialsTrack = document.querySelector('.differentials-track');
@@ -253,4 +329,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { rootMargin: '50px' });
     diffObserver.observe(differentialsSection);
   }
+
+  // ── Stats Render ──
+  const statsGrid = document.getElementById('stats-grid');
+  if (statsGrid && stats) {
+    stats.filter(s => s.enabled).forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'stat-item';
+      div.innerHTML = `<div class='stat-value' data-val='${s.value}' data-suffix='${s.suffix}'>${s.value}${s.suffix}</div><div class='stat-label'>${s.label}</div>`;
+      statsGrid.appendChild(div);
+    });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const animateStats = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.stat-value').forEach(el => {
+            const target = parseInt(el.getAttribute('data-val')) || 0;
+            const suffix = el.getAttribute('data-suffix') || '';
+            if (prefersReducedMotion || target === 0) {
+              el.textContent = target + suffix;
+              return;
+            }
+            let current = 0;
+            const duration = 1200;
+            const startTime = performance.now();
+            const update = (now) => {
+              const elapsed = now - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              current = Math.ceil(progress * target);
+              el.textContent = current + suffix;
+              if (progress < 1) requestAnimationFrame(update);
+            };
+            requestAnimationFrame(update);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    };
+    const statsObserver = new IntersectionObserver(animateStats, { threshold: 0.4 });
+    statsObserver.observe(statsGrid);
+  }
 });
+
