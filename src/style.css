@@ -3,27 +3,27 @@
   --font-heading: "Barlow Condensed", Impact, sans-serif;
   --font-body: "DM Sans", Arial, sans-serif;
   
-  /* Paleta de Cores Fixa (Âmbar + Cor Terra) */
-  --background: #ffffff; /* Branco puro - sensação de limpeza */
-  --foreground: #292524; /* Texto bem escuro/stone quente */
+  /* Paleta de Cores Fixa: O Clássico Máquina Pesada (Caterpillar) */
+  --background: #ffffff;
+  --foreground: #111111; /* Preto Absoluto para textos */
   
   --card: #ffffff;
-  --card-foreground: #292524;
+  --card-foreground: #111111;
   
-  --primary: #f59e0b; /* Amarelo retroescavadeira/âmbar */
-  --primary-foreground: #ffffff;
+  --primary: #FFB703; /* Amarelo Trator / Caterpillar */
+  --primary-foreground: #111111; /* Contraste máximo no botão amarelo */
   
-  --secondary: #292524; /* Stone 800 - Fundo escuro terroso */
-  --secondary-foreground: #fafaf9;
+  --secondary: #111111; /* Preto Absoluto para fundos escuros (Videos, Process, Footer) */
+  --secondary-foreground: #ffffff;
   
-  --muted: #f5f5f4; /* Stone 100 - fundo claro alternativo */
-  --muted-foreground: #78716c;
+  --muted: #f3f4f6; /* Cinza bem claro para áreas de respiro */
+  --muted-foreground: #4b5563;
   
-  --border: #e7e5e4;
+  --border: #e5e7eb;
   --input: #d1d5db;
-  --ring: #fcd34d;
+  --ring: #FFB703;
   
-  --earth: #78350f; /* Amber 900 - Laranja/Terra escuro para seção específica */
+  --earth: #1a1a1a; /* Cinza Quase Preto para a seção de diferenciais, dando profundidade */
 }
 
 /* ── Base ── */
@@ -428,10 +428,10 @@ details p { padding: 0 1rem 1.5rem 0; font-size: 0.875rem; color: var(--muted-fo
 .spinner { border: 2px solid currentcolor; border-top-color: transparent; border-radius: 50%; width: 1rem; height: 1rem; animation: spin 1s linear infinite; margin: 0 auto; display: inline-block; }
 
 /* ── Footer (Ultra Escuro) ── */
-.footer { background-color: #0f172a; color: #ffffff; padding: 2.5rem 0; border-top: 2px solid #1e293b; }
+.footer { background-color: var(--secondary); color: var(--secondary-foreground); padding: 2.5rem 0; border-top: 2px solid rgba(255,255,255,0.05); }
 .footer-layout { display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.75rem; }
 @media (min-width: 768px) { .footer-layout { flex-direction: row; align-items: center; justify-content: space-between; } }
-.footer-logo { height: 4rem; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.9; }
+.footer-logo { height: 4rem; width: auto; object-fit: contain; }
 @media (min-width: 768px) { .footer-logo { height: 5rem; } }
 .footer-info { display: flex; flex-direction: column; gap: 0.375rem; }
 .footer-subinfo { color: #94a3b8; }
