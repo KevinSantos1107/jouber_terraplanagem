@@ -3,27 +3,27 @@
   --font-heading: "Barlow Condensed", Impact, sans-serif;
   --font-body: "DM Sans", Arial, sans-serif;
   
-  /* Paleta de Cores Fixa (Forçada para manter a arte e contraste "Clean") */
+  /* Paleta de Cores Fixa (Âmbar + Cor Terra) */
   --background: #ffffff; /* Branco puro - sensação de limpeza */
-  --foreground: #111827; /* Texto bem escuro */
+  --foreground: #292524; /* Texto bem escuro/stone quente */
   
   --card: #ffffff;
-  --card-foreground: #111827;
+  --card-foreground: #292524;
   
-  --primary: #f59e0b; /* Amarelo retroescavadeira/terra */
-  --primary-foreground: #111827;
+  --primary: #f59e0b; /* Amarelo retroescavadeira/âmbar */
+  --primary-foreground: #ffffff;
   
-  --secondary: #1f2937; /* Cinza bem escuro para seções de contraste */
-  --secondary-foreground: #f9fafb;
+  --secondary: #292524; /* Stone 800 - Fundo escuro terroso */
+  --secondary-foreground: #fafaf9;
   
-  --muted: #f3f4f6; /* Cinza bem clarinho para alternar fundos claros */
-  --muted-foreground: #4b5563;
+  --muted: #f5f5f4; /* Stone 100 - fundo claro alternativo */
+  --muted-foreground: #78716c;
   
-  --border: #e5e7eb;
+  --border: #e7e5e4;
   --input: #d1d5db;
   --ring: #fcd34d;
   
-  --earth: #d97706; /* Laranja/Terra mais escuro para destaques de texto */
+  --earth: #78350f; /* Amber 900 - Laranja/Terra escuro para seção específica */
 }
 
 /* ── Base ── */
@@ -188,13 +188,11 @@ header {
   object-fit: cover;
   object-position: 63% center;
   z-index: -2;
-  transition: opacity 0.7s;
+  transition: opacity 1s ease-in-out;
   opacity: 0;
 }
 @media (min-width: 768px) { .hero-bg { object-position: center; } }
 .hero-bg.loaded { opacity: 1; }
-.skeleton { background-color: var(--muted); animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
 .hero-scrim {
   position: absolute;
@@ -261,8 +259,9 @@ header {
 /* ── Hazard Stripe ── */
 .hazard-stripe { height: 8px; background: repeating-linear-gradient(115deg, var(--secondary) 0 14px, var(--secondary) 14px 19px, var(--primary) 19px 34px, var(--primary) 34px 38px); }
 
-/* ── Differentials (Claro - Limpo) ── */
-.differentials { background-color: var(--background); color: var(--foreground); padding: 3rem 0; border-bottom: 1px solid var(--border); }
+/* ── Differentials (Escuro - Cor Terra) ── */
+.differentials { background-color: var(--earth); color: #ffffff; padding: 3rem 0; }
+.differentials svg { color: var(--primary); }
 .differentials-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -326,9 +325,33 @@ header {
 .service-quote { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 0.2rem; transition: border-color 0.2s; }
 .service-quote:hover { border-color: var(--foreground); }
 
-/* ── Process (Escuro - Quebra de Dinâmica) ── */
-.process { background-color: var(--secondary); color: var(--secondary-foreground); padding: 4rem 0; }
-@media (min-width: 768px) { .process { padding: 7rem 0; } }
+/* ── Videos (Escuro - Portfolio) ── */
+.videos-section { background-color: var(--secondary); color: var(--secondary-foreground); padding: 4rem 0 2rem 0; }
+@media (min-width: 768px) { .videos-section { padding: 7rem 0 3rem 0; } }
+.videos-header { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.75rem; }
+@media (min-width: 768px) { .videos-header { flex-direction: row; align-items: flex-end; justify-content: space-between; margin-bottom: 3.5rem; } }
+.videos-header h2 { font-size: 3rem; }
+@media (min-width: 768px) { .videos-header h2 { font-size: 4.5rem; } }
+.videos-intro { max-width: 24rem; color: color-mix(in srgb, var(--secondary-foreground) 75%, transparent); }
+.videos-grid { display: grid; gap: 1rem; }
+@media (min-width: 768px) { .videos-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .videos-grid { grid-template-columns: repeat(3, 1fr); } }
+.video-card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 14rem; overflow: hidden; padding: 1.25rem; border: 1px solid color-mix(in srgb, var(--secondary-foreground) 20%, transparent); }
+@media (min-width: 768px) { .video-card { min-height: 18rem; } }
+.video-card.large { grid-column: 1 / -1; min-height: 18rem; }
+@media (min-width: 1024px) { .video-card.large { grid-column: span 2; grid-row: span 2; min-height: 36rem; } }
+.video-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: -2; transition: transform 0.5s; }
+.video-card:hover img { transform: scale(1.05); }
+.video-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%); z-index: -1; }
+.video-badge { margin-bottom: auto; width: fit-content; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid color-mix(in srgb, var(--secondary-foreground) 70%, transparent); padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+.video-content { margin-top: auto; }
+.video-svc-num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.25rem; }
+.video-card h3 { font-size: 2rem; }
+@media (min-width: 1024px) { .video-card.large h3 { font-size: 3.5rem; } }
+
+/* ── Process (Escuro - Mesclado com Videos) ── */
+.process { background-color: var(--secondary); color: var(--secondary-foreground); padding: 3rem 0 4rem 0; }
+@media (min-width: 768px) { .process { padding: 4rem 0 7rem 0; } }
 .process-header { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem; }
 @media (min-width: 768px) { .process-header { flex-direction: row; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; } }
 .process-header h2 { font-size: 3rem; }
