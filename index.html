@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jouber Terraplanagem | Terraplanagem, demolição e limpeza em Sete Lagoas</title>
+    <meta name="description" content="Terraplanagem, aterro e desaterro, demolição de casas e limpeza de lotes em Sete Lagoas e região. 15 anos de experiência. Solicite um orçamento pelo WhatsApp." />
+    
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Scroll Progress -->
+    <div id="progress-bar-container" aria-hidden="true">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+      <div class="header-content">
+        <a href="#inicio" class="logo-link" aria-label="Início">
+          <img src="/assets/jouber-logo.png" alt="Jouber Terraplanagem e Locações" class="logo-img" />
+        </a>
+        <nav class="desktop-nav" aria-label="Navegação principal">
+          <a href="#servicos">Serviços</a>
+          <a href="#processo">Como funciona</a>
+          <a href="#resultados">Resultados</a>
+          <a href="#duvidas">Dúvidas</a>
+        </nav>
+        <button class="btn btn-primary btn-lg hidden-mobile header-cta" onclick="document.getElementById('orcamento').scrollIntoView({ behavior: 'smooth' })">
+          Peça um orçamento <span class="arrow">→</span>
+        </button>
+        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Abrir menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="mobile-nav" class="mobile-nav">
+        <nav aria-label="Menu móvel">
+          <a href="#servicos">Serviços</a>
+          <a href="#processo">Como funciona</a>
+          <a href="#resultados">Resultados</a>
+          <a href="#duvidas">Dúvidas</a>
+          <a href="#orcamento">Orçamento</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section id="inicio" class="hero">
+        <img src="/assets/hero-excavator.webp" alt="Retroescavadeira" class="hero-bg skeleton" fetchpriority="high" />
+        <div class="hero-scrim"></div>
+        <div class="hero-content">
+          <div class="hero-text">
+            <p class="hero-subtitle reveal" data-delay="100"><span class="accent-line"></span> Sete Lagoas e região</p>
+            <h1 class="reveal" data-delay="200">Terraplanagem, demolição e limpeza de lotes <span class="text-earth">com qualidade e pontualidade.</span></h1>
+            <p class="hero-desc reveal" data-delay="320">Há 15 anos preparando terrenos na região. Da demolição ao aterro, seu projeto começa com o pé direito.</p>
+            <div class="hero-cta-wrapper reveal" data-delay="440">
+              <button class="btn btn-primary btn-lg dig-button" onclick="window.open('https://wa.me/5531996686933?text=Olá!%20Gostaria%20de%20solicitar%20um%20orçamento%20sem%20compromisso.', '_blank')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                Conversar no WhatsApp
+                <img src="/assets/realistic-backhoe.png" alt="" class="hero-excavator-icon" />
+              </button>
+              <span class="hero-cta-note">Orçamento sem compromisso</span>
+            </div>
+          </div>
+        </div>
+        <a href="#servicos" class="scroll-down-btn" aria-label="Ver serviços">
+          Conheça os serviços
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </a>
+      </section>
+
+      <div class="hazard-stripe"></div>
+
+      <!-- Differentials -->
+      <section class="differentials">
+        <div class="differentials-grid reveal-list" data-stagger="60">
+          <div class="diff-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z"/><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M4 15v-3a6 6 0 0 1 12 0v3"/></svg>
+            <span>15 anos de experiência</span>
+          </div>
+          <div class="diff-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+            <span>100+ clientes atendidos</span>
+          </div>
+          <div class="diff-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-9h-5V5"/><path d="M15 13H4"/><path d="M5 17a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/><path d="M15 17a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/></svg>
+            <span>Equipamentos próprios</span>
+          </div>
+          <div class="diff-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Serviço de qualidade</span>
+          </div>
+          <div class="diff-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Sete Lagoas e região</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services -->
+      <section id="servicos" class="services">
+        <div class="container">
+          <div class="services-header">
+            <div class="reveal">
+              <p class="section-subtitle text-earth">O que fazemos</p>
+              <h2>Serviço pesado.<br/>Trabalho bem feito.</h2>
+            </div>
+            <div class="reveal" data-direction="right" data-delay="150">
+              <p class="services-intro">Terraplanagem, aterro e desaterro, demolição e limpeza de lotes para deixar seu projeto pronto para a próxima etapa.</p>
+            </div>
+          </div>
+          <div class="services-grid reveal-list" data-stagger="100">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Process -->
+      <section id="processo" class="process">
+        <div class="container">
+          <div class="process-header">
+            <div class="reveal">
+              <p class="section-subtitle text-primary">Simples do começo ao fim</p>
+              <h2>Como funciona</h2>
+            </div>
+            <div class="reveal" data-direction="right" data-delay="120">
+              <p class="process-intro">Sem complicação. Você conta o que precisa e nós cuidamos do restante.</p>
+            </div>
+          </div>
+          <div class="process-grid reveal-list" data-stagger="90">
+            <div class="process-step">
+              <span class="step-num text-primary">01</span>
+              <h3>Você chama</h3>
+              <p>Conte o que precisa pelo WhatsApp.</p>
+            </div>
+            <div class="process-step">
+              <span class="step-num text-primary">02</span>
+              <h3>A gente visita</h3>
+              <p>Avaliamos o local e preparamos o orçamento.</p>
+            </div>
+            <div class="process-step">
+              <span class="step-num text-primary">03</span>
+              <h3>Agendamos</h3>
+              <p>Combinamos a melhor data para começar.</p>
+            </div>
+            <div class="process-step">
+              <span class="step-num text-primary">04</span>
+              <h3>Executamos</h3>
+              <p>Fazemos o serviço e deixamos o local limpo.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results (Before/After) -->
+      <section id="resultados" class="results">
+        <div class="container">
+          <div class="reveal" style="margin-bottom: 2.5rem;">
+            <p class="section-subtitle text-earth">Veja a diferença</p>
+            <h2>Antes e depois</h2>
+            <p style="color: var(--muted-foreground); font-size: 0.875rem; max-width: 32rem; margin-top: 1rem;">Arraste a linha para comparar. As imagens abaixo são ilustrações de serviços, não registros de obras realizadas.</p>
+          </div>
+          <div class="results-grid">
+            <div class="reveal" data-direction="left">
+              <div class="compare-wrapper">
+                <div class="compare-header">
+                  <h3>Limpeza de lote</h3>
+                  <span>Imagens ilustrativas</span>
+                </div>
+                <div class="compare-container">
+                  <img src="/assets/clearing-before.webp" alt="Lote com vegetação" class="skeleton compare-img-bg" loading="lazy" />
+                  <div class="compare-after" style="--reveal: 50%;">
+                    <img src="/assets/service-clearing.webp" alt="Lote limpo" loading="lazy" />
+                  </div>
+                  <div class="compare-line" style="--reveal: 50%;">
+                    <div class="compare-handle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8L22 12L18 16"/><path d="M2 12H22"/><path d="M6 8L2 12L6 16"/></svg>
+                    </div>
+                  </div>
+                  <span class="compare-badge badge-left">Antes</span>
+                  <span class="compare-badge badge-right">Depois</span>
+                  <input type="range" min="0" max="100" value="50" class="compare-slider" aria-label="Comparar antes e depois" />
+                </div>
+              </div>
+            </div>
+            <div class="reveal" data-direction="right" data-delay="150">
+              <div class="compare-wrapper">
+                <div class="compare-header">
+                  <h3>Demolição</h3>
+                  <span>Imagens ilustrativas</span>
+                </div>
+                <div class="compare-container">
+                  <img src="/assets/service-demolition.webp" alt="Casa em demolição" class="skeleton compare-img-bg" loading="lazy" />
+                  <div class="compare-after" style="--reveal: 50%;">
+                    <img src="/assets/demolition-after.webp" alt="Terreno limpo" loading="lazy" />
+                  </div>
+                  <div class="compare-line" style="--reveal: 50%;">
+                    <div class="compare-handle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8L22 12L18 16"/><path d="M2 12H22"/><path d="M6 8L2 12L6 16"/></svg>
+                    </div>
+                  </div>
+                  <span class="compare-badge badge-left">Antes</span>
+                  <span class="compare-badge badge-right">Depois</span>
+                  <input type="range" min="0" max="100" value="50" class="compare-slider" aria-label="Comparar antes e depois" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="duvidas" class="faq">
+        <div class="container faq-layout">
+          <div class="reveal" data-direction="left">
+            <p class="section-subtitle text-earth">Dúvidas frequentes</p>
+            <h2>Tudo bem claro, antes de começar.</h2>
+          </div>
+          <div class="reveal faq-accordion" data-delay="100">
+            <details>
+              <summary>Precisa de alvará para demolir?</summary>
+              <p>Em muitos municípios, sim. As exigências variam conforme a cidade e o tipo de imóvel. Consulte a prefeitura antes de começar; podemos conversar sobre as necessidades do seu projeto.</p>
+            </details>
+            <details>
+              <summary>Vocês retiram o entulho?</summary>
+              <p>Sim. A remoção de entulho e materiais pode fazer parte do serviço. Informe essa necessidade na hora de pedir o orçamento.</p>
+            </details>
+            <details>
+              <summary>Quanto tempo leva?</summary>
+              <p>Depende do tamanho do terreno, acesso ao local e tipo de serviço. Após a avaliação, alinhamos um prazo para a execução.</p>
+            </details>
+            <details>
+              <summary>Como é calculado o preço?</summary>
+              <p>O orçamento considera área, volume de material, condições do terreno, acesso e equipamentos necessários. Cada projeto é avaliado individualmente.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <div class="hazard-stripe"></div>
+
+      <!-- Quote -->
+      <section id="orcamento" class="quote-section">
+        <div class="container quote-layout">
+          <div class="reveal" data-direction="left">
+            <p class="section-subtitle text-primary">Vamos tirar seu projeto do papel?</p>
+            <h2 class="quote-title">O próximo passo começa aqui.</h2>
+            <p class="quote-desc">Conte o que você precisa. Vamos conversar e preparar um orçamento sem compromisso.</p>
+            <div class="quote-contacts">
+              <a href="https://wa.me/5531996686933" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                WhatsApp: (31) 99668-6933
+              </a>
+              <a href="mailto:jouberamaral@yahoo.com.br">
+                jouberamaral@yahoo.com.br
+              </a>
+            </div>
+            <img src="/assets/realistic-backhoe.png" alt="" class="quote-excavator" />
+          </div>
+          <div class="reveal" data-direction="right" data-delay="150">
+            <form id="quote-form" class="quote-form" novalidate>
+              <h3>Peça seu orçamento</h3>
+              <div class="form-group">
+                <label for="name">Seu nome</label>
+                <input type="text" id="name" name="name" placeholder="Como podemos te chamar?" required autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label for="phone">WhatsApp</label>
+                <input type="tel" id="phone" name="phone" placeholder="(00) 00000-0000" required autocomplete="tel" />
+              </div>
+              <div class="form-group">
+                <label for="service">Tipo de serviço</label>
+                <select id="service" name="service" required>
+                  <option value="" disabled selected>Selecione um serviço</option>
+                  <option value="Terraplanagem">Terraplanagem</option>
+                  <option value="Aterro e desaterro">Aterro e desaterro</option>
+                  <option value="Demolição de casas">Demolição de casas</option>
+                  <option value="Limpeza de lotes">Limpeza de lotes</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg dig-button w-full" id="submit-btn">
+                <span class="btn-text">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                  Enviar pelo WhatsApp <span class="arrow">→</span>
+                </span>
+                <span class="spinner" style="display:none;"></span>
+              </button>
+              <p class="form-note">Ao enviar, uma conversa será aberta no WhatsApp.</p>
+              <p id="form-success" class="form-success" style="display:none;">Mensagem preparada. Conclua o envio no WhatsApp.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-layout">
+        <img src="/assets/jouber-logo.png" alt="Jouber Terraplanagem" class="footer-logo" loading="lazy" />
+        <div class="footer-info">
+          <span>Terraplanagem · Aterro e desaterro · Demolição · Limpeza de lotes</span>
+          <span class="footer-subinfo">Sete Lagoas e região · Jouber Alves Amaral</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://wa.me/5531996686933" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="mailto:jouberamaral@yahoo.com.br">E-mail</a>
+          <a href="#inicio">Topo ↑</a>
+        </div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/5531996686933" target="_blank" rel="noopener noreferrer" class="floating-whatsapp" aria-label="Conversar pelo WhatsApp">
+      <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+    </a>
+
+    <!-- Service Details Dialog -->
+    <dialog id="service-dialog" class="service-dialog">
+      <div class="dialog-content">
+        <div class="dialog-img-wrapper">
+          <img id="dialog-img" src="" alt="" />
+          <button id="dialog-close" class="dialog-close" aria-label="Fechar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="dialog-body">
+          <span id="dialog-num" class="dialog-num"></span>
+          <h3 id="dialog-title" class="dialog-title"></h3>
+          <p id="dialog-desc" class="dialog-desc"></p>
+          <ul id="dialog-details" class="dialog-details-list"></ul>
+          <p class="dialog-note">O escopo e o orçamento são definidos após avaliar o local.</p>
+          <button id="dialog-cta" class="btn btn-primary btn-lg w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            Solicitar orçamento <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

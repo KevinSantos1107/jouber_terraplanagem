@@ -1,0 +1,13 @@
+- [x] Build mobile-first landing page with services, process, comparisons, FAQ, and WhatsApp inquiry form.
+- [x] Add lightweight excavator animation, scroll progress, and reduced-motion behavior.
+- [x] Make each service open a details modal and show before on the left, after on the right.
+- [x] Add strategic video showcase placeholders for service footage to be supplied later.
+- [x] Replace provisional brand with Jouber Terraplanagem and set WhatsApp (31) 99668-6933, e-mail, Sete Lagoas e região, 15 anos, 100+ clientes, and the 4 disclosed services.
+- [ ] Replace illustrative before/after images with real customer photos when supplied.
+- [ ] Add real customer testimonials (customer confirms they have them; texts pending).
+- [ ] Add Instagram link (profile handle pending from customer).
+- [ ] Service footage videos pending from customer.
+- [x] Redesign the services section with the selected heavy industrial grid and distinct service imagery.
+- [x] Integrate the supplied Jouber logo in the header, footer, and browser icon.
+- [ ] Convert to Vite with vanilla JavaScript and CSS only — blocked because this Lovable project requires its supported TanStack Start structure.
+- [x] Replace the basic excavator SVG with a realistic transparent animated backhoe asset.
