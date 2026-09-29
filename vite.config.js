@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: './',
   build: {
     // Aumenta o limite de chunks pra Vercel não chiar
     chunkSizeWarningLimit: 1000,

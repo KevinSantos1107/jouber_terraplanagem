@@ -12,7 +12,7 @@ const services = [
     num: "01",
     name: "Terraplanagem",
     desc: "Nivelamento e preparo do terreno para sua obra começar com a base certa.",
-    image: "/assets/service-earthworks.webp",
+    image: "./assets/service-earthworks.webp",
     alt: "Escavadeira nivelando terreno",
     details: [
       "Nivelamento e preparação do terreno",
@@ -24,7 +24,7 @@ const services = [
     num: "02",
     name: "Aterro e desaterro",
     desc: "Acerto do nível do terreno, com entrada ou retirada de terra.",
-    image: "/assets/service-fill-earthwork.jpg",
+    image: "./assets/service-fill-earthwork.jpg",
     alt: "Caminhão descarregando terra",
     details: [
       "Aterro para elevar o terreno",
@@ -36,7 +36,7 @@ const services = [
     num: "03",
     name: "Demolição de casas",
     desc: "Demolição com planejamento e atenção à segurança do entorno.",
-    image: "/assets/service-demolition.webp",
+    image: "./assets/service-demolition.webp",
     alt: "Escavadeira em demolição",
     details: [
       "Avaliação prévia do imóvel",
@@ -48,7 +48,7 @@ const services = [
     num: "04",
     name: "Limpeza de lotes",
     desc: "Remoção de vegetação e resíduos para transformar o terreno.",
-    image: "/assets/service-clearing.webp",
+    image: "./assets/service-clearing.webp",
     alt: "Retroescavadeira limpando lote",
     details: [
       "Limpeza de áreas com vegetação",
@@ -60,7 +60,7 @@ const services = [
     num: "05",
     name: "Terraplanagem residencial",
     desc: "Preparo e nivelamento de terrenos para construção residencial, garantindo base firme e drenagem adequada.",
-    image: "/assets/service-residential.webp",
+    image: "./assets/service-residential.webp",
     alt: "Terraplanagem residencial",
     whatsappMsg: "Olá! Quero um orçamento para terraplanagem residencial."
   },
@@ -68,7 +68,7 @@ const services = [
     num: "06",
     name: "Remoção de entulho e materiais",
     desc: "Coleta e descarte correto de entulho, terra e materiais de obra, deixando o local pronto para o próximo passo.",
-    image: "/assets/service-debris.webp",
+    image: "./assets/service-debris.webp",
     alt: "Remoção de entulho e materiais",
     whatsappMsg: "Olá! Quero um orçamento para remoção de entulho e materiais."
   }
@@ -155,22 +155,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // ── Floating WA Visibility ──
   const floatingWa = document.querySelector('.floating-whatsapp');
   if (floatingWa) {
-    let shown = false;
-
-    const showFloating = () => {
-      if (shown) return;
-      shown = true;
-      floatingWa.classList.add('visible');
-      // Once shown, no need to keep the scroll listener
-      window.removeEventListener('scroll', onScroll);
-    };
-
     const onScroll = () => {
-      // Show after scrolling ~15% of the viewport height
-      if (window.scrollY >= window.innerHeight * 0.15) showFloating();
+      // Show after scrolling ~15% of the viewport height, hide when scrolling back up
+      if (window.scrollY >= window.innerHeight * 0.15) {
+        floatingWa.classList.add('visible');
+      } else {
+        floatingWa.classList.remove('visible');
+      }
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    // Check initial state
+    onScroll();
   }
 
 // ── Render Services ──
