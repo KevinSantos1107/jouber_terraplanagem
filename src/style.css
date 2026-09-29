@@ -263,8 +263,6 @@ header {
 .differentials {
   background-color: var(--earth); color: #ffffff; padding: 1.5rem 0;
   overflow: hidden; pointer-events: none; user-select: none;
-  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   display: block; width: 100%; white-space: nowrap;
 }
 .differentials svg { color: var(--primary); flex-shrink: 0; }
