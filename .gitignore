@@ -31,3 +31,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Lovable reference folder — source only, never deploy
+codigo lovable/
