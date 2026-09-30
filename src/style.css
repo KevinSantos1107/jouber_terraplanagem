@@ -49,7 +49,7 @@ button:active, a:active {
   opacity: 0.9;
   transition: transform 150ms ease, opacity 150ms ease;
 }
-html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; position: relative; }
+html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 0; }
 body {
   font-family: var(--font-body);
   background-color: var(--background);
@@ -58,7 +58,8 @@ body {
   overflow-x: hidden;
   width: 100%;
   position: relative;
-  padding-bottom: 0;
+  margin: 0;
+  padding: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1236,7 +1237,9 @@ header.hero__header {
   flex-direction: column;
   min-height: 100vh;
   min-height: 100svh;
+  min-height: 100dvh;
   position: relative;
+  overflow: hidden;
 }
 
 /* --- Background layers --- */
@@ -1252,6 +1255,25 @@ header.hero__header {
   max-height: none !important;
   object-fit: cover !important;
   pointer-events: none !important;
+}
+
+.hero__video-mount {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.hero__video-mount video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 
 .hero__slide {
@@ -1494,13 +1516,14 @@ header.hero__header {
 .hero__content {
   position: relative;
   z-index: 10;
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding-top: clamp(0.75rem, 3svh, 2rem);
   padding-bottom: 24px;
   padding-inline: 20px;
+  min-height: 0;
 }
 @media (min-width: 640px) {
   .hero__content { padding-inline: 40px; }
