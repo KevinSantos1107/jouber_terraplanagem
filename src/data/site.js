@@ -1,7 +1,7 @@
 export const WHATSAPP_NUMBER = '5531996686933';
 export const PHONE_TEL = '+5531996686933';
 export const sections = {
-  testimonials: { enabled: false },
+  testimonials: { enabled: true },
   videos: { enabled: true },
   partners: { enabled: false },
   licenses: { enabled: false },

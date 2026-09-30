@@ -206,7 +206,7 @@ header {
 .w-full { width: 100%; }
 
 .dig-button svg { transition: transform 0.25s ease; }
-.dig-button:hover svg { transform: rotate(-24deg) translateY(3px); }
+/* Rotation removed per user request */
 .arrow { transition: transform 0.2s; }
 .dig-button:hover .arrow { transform: translateX(4px); }
 
@@ -857,26 +857,84 @@ header {
 .badge-right { right: 1rem; }
 .compare-slider { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 20; }
 
-/* â”€â”€ Testimonials (Muted) â”€â”€ */
+/* ── Testimonials (Google Reviews Layout) ── */
 .testimonials { padding: 4rem 0; background-color: var(--muted); }
 @media (min-width: 768px) { .testimonials { padding: 7rem 0; } }
-.testi-header { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
-@media (min-width: 768px) { .testi-header { flex-direction: row; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; } }
-.testi-header h2 { font-size: 3rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.testi-header { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem; }
+@media (min-width: 768px) { .testi-header { flex-direction: row; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; } }
+.testi-header h2 { font-size: 3rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1; }
 @media (min-width: 768px) { .testi-header h2 { font-size: 4.5rem; } }
-.testi-desc { font-size: 1rem; color: var(--muted-foreground); max-width: 32rem; }
-.testi-icon { display: none; }
-@media (min-width: 768px) { .testi-icon { display: block; opacity: 0.8; } }
-.testi-grid { display: grid; gap: 1.5rem; }
-@media (min-width: 768px) { .testi-grid { grid-template-columns: repeat(3, 1fr); } }
-.testi-card { background-color: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); transition: transform 0.2s, box-shadow 0.2s; }
-.testi-card:hover { transform: translateY(-0.25rem); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border-color: var(--primary); }
-.testi-stars { display: flex; gap: 0.25rem; margin-bottom: 1.25rem; }
-.testi-quote { font-size: 1rem; color: var(--foreground); font-style: italic; margin-bottom: 2rem; flex: 1; }
-.testi-author { display: flex; align-items: center; gap: 1rem; margin-top: auto; border-top: 1px solid var(--border); padding-top: 1.5rem; }
-.testi-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--muted); border: 2px solid var(--primary); }
-.testi-info h4 { font-family: var(--font-body); font-weight: 700; font-size: 0.875rem; text-transform: none; margin: 0; }
-.testi-info span { font-size: 0.75rem; color: var(--muted-foreground); }
+.testi-google-badge { display: flex; align-items: center; gap: 1rem; background: var(--card); padding: 1rem 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.testi-google-logo svg { width: 32px; height: 32px; }
+.testi-google-score-row { display: flex; align-items: center; gap: 0.5rem; }
+.testi-google-score { font-size: 2rem; font-family: var(--font-heading); font-weight: 700; line-height: 1; color: var(--foreground); }
+.testi-google-stars { display: flex; gap: 2px; }
+.testi-google-link { font-size: 0.8125rem; font-weight: 700; color: var(--muted-foreground); text-decoration: underline; margin-top: 0.25rem; display: block; }
+.testi-google-link:hover { color: var(--foreground); }
+
+.testi-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 1.25rem;
+  padding: 1rem 0 2rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  cursor: grab;
+}
+.testi-carousel.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.testi-carousel.is-dragging * {
+  pointer-events: none;
+}
+.testi-carousel::-webkit-scrollbar { display: none; }
+
+.testi-scroll-hint { display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; }
+
+.testi-card {
+  flex: 0 0 85%;
+  scroll-snap-align: center;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+@media (min-width: 640px) {
+  .testi-card { flex: 0 0 45%; }
+}
+@media (min-width: 1024px) {
+  .testi-card { flex: 0 0 30%; }
+}
+@media (min-width: 768px) {
+  .testi-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border-color: var(--border); }
+}
+
+.testi-author { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: var(--primary); color: #111; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: var(--font-heading); font-size: 1.2rem; }
+.testi-info { flex: 1; display: flex; flex-direction: column; }
+.testi-info h4 { font-family: var(--font-body); font-weight: 700; font-size: 0.9375rem; text-transform: none; margin: 0; line-height: 1.2; color: var(--foreground); }
+.testi-info span { font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.125rem; }
+.testi-google-badge-small svg { width: 18px; height: 18px; }
+
+.testi-stars { display: flex; gap: 2px; margin-bottom: 0.75rem; }
+.testi-quote { font-size: 0.9375rem; color: var(--foreground); line-height: 1.5; margin: 0; }
+.btn-ler-mais, .btn-ler-menos { background: none; border: none; padding: 0; color: var(--muted-foreground); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: 0.875rem; margin-left: 0.25rem; }
+.btn-ler-mais:hover, .btn-ler-menos:hover { color: var(--foreground); }
+
+.testi-footer { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+@media (min-width: 640px) { .testi-footer { flex-direction: row; justify-content: center; } }
+.testi-btn-google { background-color: #fff; color: #3c4043; border: 1px solid #dadce0; display: flex; align-items: center; gap: 0.75rem; font-weight: 600; padding: 0 1.5rem; height: 3rem; border-radius: 9999px; text-decoration: none; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.testi-btn-google:hover { background-color: #f8f9fa; }
 
 /* â”€â”€ Process (Escuro - Secondary) â”€â”€ */
 .process { background-color: var(--secondary); color: var(--secondary-foreground); padding: 3rem 0 4rem 0; }

@@ -74,6 +74,74 @@ const services = [
   }
 ];
 
+// ── Google Reviews Data ──
+// Para editar: altere apenas este array. Os cards são gerados automaticamente.
+const googleReviews = [
+  {
+    nome: "Erik Rodrigues",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 6 meses",
+    texto: "Excelente atendimento e execução muito bem feita. Profissional pontual, educado e muito competente. Nota 10."
+  },
+  {
+    nome: "Thiago Araujo",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 6 meses",
+    texto: "Melhor serviço de Sete Lagoas e Região! Profissional responsável e de altíssima qualidade! Indicação certa 👏"
+  },
+  {
+    nome: "Ingred Lima",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 3 meses",
+    texto: "Passando para agradecer pelo excelente trabalho! Contratei o serviço de vocês e fiquei extremamente satisfeito com o resultado. Ficou muito bom mesmo, superou minhas expectativas. Parabéns pelo profissionalismo"
+  },
+  {
+    nome: "Geraldo Murilo Oliveira",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 3 meses",
+    texto: "Excelente profissional!! Serviço com perfeição, super indico"
+  },
+  {
+    nome: "Magna Freitas",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 3 meses",
+    texto: "Excelente atendimento! Responsável, educado e muito profissional!"
+  },
+  {
+    nome: "SORAYA ALMEIDA",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 6 meses",
+    texto: "Serviço de excelente qualidade. Super indico!"
+  },
+  {
+    nome: "Renato Filgueiras Gonçalves",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 5 meses",
+    texto: "Excelente serviço! Sou cliente há anos da empresa. Fica aqui a indicação!"
+  },
+  {
+    nome: "Patricia Sps",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 3 meses",
+    texto: "Atendimento de excelência com qualidade, preço justo e cordialidade do prestador. Super recomendo!"
+  },
+  {
+    nome: "Elaide Santos",
+    local: "Sete Lagoas",
+    nota: 5,
+    data: "há 4 meses",
+    texto: "Contratei o serviço de terraplanagem e fiquei extremamente satisfeito. O trabalho foi executado com muita precisão, agilidade e profissionalismo. O terreno ficou perfeito e o atendimento foi impecável do início ao fim. Recomendo de olhos fechados!"
+  }
+];
+
 document.addEventListener("DOMContentLoaded", () => {
   // Toggle Sections based on site.js
   if (!sections.testimonials.enabled) {
@@ -242,6 +310,91 @@ document.addEventListener("DOMContentLoaded", () => {
   assignWaLink('btn-services-wa');
   assignWaLink('btn-results-wa');
   assignWaLink('btn-process-wa');
+  assignWaLink('btn-testi-wa');
+
+  // ── Render Testimonials (Google Reviews) ──
+  const testiCarousel = document.getElementById("testi-carousel");
+  if (testiCarousel && googleReviews.length > 0) {
+    googleReviews.forEach(review => {
+      const card = document.createElement("div");
+      card.className = "testi-card";
+      
+      let textContent = review.texto;
+      let textHTML = `<p class="testi-quote">${textContent}</p>`;
+      
+      // Simple logic to add "Ler mais" if text is long (> 130 chars approx 4 lines)
+      if (textContent.length > 130) {
+        const shortText = textContent.substring(0, 130) + '...';
+        textHTML = `
+          <p class="testi-quote testi-text-short">${shortText} <button class="btn-ler-mais">Ler mais</button></p>
+          <p class="testi-quote testi-text-full" style="display: none;">${textContent} <button class="btn-ler-menos">Ler menos</button></p>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="testi-author">
+          <div class="testi-avatar">${review.nome.charAt(0).toUpperCase()}</div>
+          <div class="testi-info">
+            <h4>${review.nome}</h4>
+            <span>${review.data}</span>
+          </div>
+          <div class="testi-google-badge-small">
+            <a href="https://www.google.com/maps/place//data=!4m4!3m3!1s0xa65191a0993107:0x959d99801d91c25d!9m1!1b1" target="_blank" rel="noopener noreferrer" aria-label="Ver avaliação no Google">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="testi-stars" aria-label="Nota ${review.nota} de 5">
+          ${'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-primary"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'.repeat(review.nota)}
+        </div>
+        ${textHTML}
+      `;
+      testiCarousel.appendChild(card);
+    });
+
+    // Handle Read More/Less
+    testiCarousel.addEventListener("click", (e) => {
+      if (e.target.classList.contains("btn-ler-mais")) {
+        const card = e.target.closest(".testi-card");
+        card.querySelector(".testi-text-short").style.display = "none";
+        card.querySelector(".testi-text-full").style.display = "block";
+      } else if (e.target.classList.contains("btn-ler-menos")) {
+        const card = e.target.closest(".testi-card");
+        card.querySelector(".testi-text-short").style.display = "block";
+        card.querySelector(".testi-text-full").style.display = "none";
+      }
+    });
+
+    // ── Mouse Drag-to-Scroll Logic for Desktop ──
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    testiCarousel.addEventListener('mousedown', (e) => {
+      isDown = true;
+      testiCarousel.classList.add('is-dragging');
+      startX = e.pageX - testiCarousel.offsetLeft;
+      scrollLeft = testiCarousel.scrollLeft;
+    });
+
+    testiCarousel.addEventListener('mouseleave', () => {
+      isDown = false;
+      testiCarousel.classList.remove('is-dragging');
+    });
+
+    testiCarousel.addEventListener('mouseup', () => {
+      isDown = false;
+      testiCarousel.classList.remove('is-dragging');
+    });
+
+    testiCarousel.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - testiCarousel.offsetLeft;
+      const walk = (x - startX) * 2; // scroll-fast multiplier
+      testiCarousel.scrollLeft = scrollLeft - walk;
+    });
+  }
 
   // ── Compare Sliders ──
   const sliders = document.querySelectorAll(".compare-slider");
