@@ -381,3 +381,42 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
+// Hero video logic
+(function () {
+  const mount = document.querySelector("[data-hero-video]");
+  if (!mount) return;
+  const video = document.createElement("video");
+  video.className = "hero__video";
+  video.src = "./assets/hero-loop.mp4";
+  video.poster = "./assets/hero-excavator.webp";
+  video.autoplay = true;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.setAttribute("aria-hidden", "true");
+  mount.appendChild(video);
+})();
+
+
+// Mobile menu toggle logic
+(function () {
+  const btn = document.querySelector(".mobile-menu-btn");
+  const nav = document.querySelector(".mobile-nav");
+  if (!btn || !nav) return;
+  
+  btn.addEventListener("click", () => {
+    const isExpanded = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", !isExpanded);
+    nav.classList.toggle("open");
+  });
+  
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      btn.setAttribute("aria-expanded", "false");
+      nav.classList.remove("open");
+    });
+  });
+})();
+
