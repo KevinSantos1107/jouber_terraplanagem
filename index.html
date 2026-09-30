@@ -19,69 +19,79 @@
       <div id="progress-bar"></div>
     </div>
 
-    <!-- Header -->
-    <header id="header">
-      <div class="header-content">
-        <a href="#inicio" class="logo-link" aria-label="Início">
-          <img src="./assets/jouber-logo.png" alt="Jouber Terraplanagem e Locações" class="logo-img" />
-          <span class="logo-name">Jouber Terraplanagem</span>
-        </a>
-        <nav class="desktop-nav" aria-label="Navegação principal">
-          <a href="#servicos">Serviços</a>
-          <a href="#processo">Como funciona</a>
-          <a href="#resultados">Resultados</a>
-          <a href="#sobre">Sobre</a>
-          <a href="#duvidas">Dúvidas</a>
-          <a href="#orcamento">Contato</a>
-        </nav>
-        <button class="btn btn-primary btn-lg hidden-mobile header-cta" onclick="document.getElementById('orcamento').scrollIntoView({ behavior: 'smooth' })">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-          Peça um orçamento
-        </button>
-        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Abrir menu" aria-expanded="false">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-      </div>
-      <div id="mobile-nav" class="mobile-nav">
-        <nav aria-label="Menu móvel">
-          <a href="#servicos">Serviços</a>
-          <a href="#processo">Como funciona</a>
-          <a href="#resultados">Resultados</a>
-          <a href="#sobre">Sobre</a>
-          <a href="#duvidas">Dúvidas</a>
-          <a href="#orcamento">Contato</a>
-        </nav>
-      </div>
+        <!-- Header (Lovable style) -->
+    <header id="header" class="lv-header">
+      <a href="#inicio" class="lv-logo-link" aria-label="Início">
+        <img src="./assets/jouber-logo.png" alt="Jouber Terraplanagem" class="lv-logo-img lv-hero-rise" />
+      </a>
+      <a href="https://wa.me/5531996686933?text=Olá!%20Gostaria%20de%20solicitar%20um%20orçamento%20sem%20compromisso." target="_blank" rel="noopener noreferrer" class="lv-header-whatsapp lv-hero-rise" style="animation-delay: 0.15s">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="lv-wa-icon" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        <span class="lv-wa-text-desktop">(31) 99668-6933</span>
+        <span class="lv-wa-text-mobile">WhatsApp</span>
+      </a>
     </header>
 
     <main>
-      <!-- Hero -->
-      <section id="inicio" class="hero">
-        <img src="./assets/hero-excavator.webp" alt="Retroescavadeira" class="hero-bg" fetchpriority="high" />
-        <div class="hero-scrim"></div>
-        <div class="hero-content">
-          <div class="hero-text">
-            <p class="hero-subtitle reveal" data-delay="100"><span class="accent-line"></span> Sete Lagoas e região — terraplanagem e terraplenagem</p>
-            <h1 class="reveal" data-delay="200">Terraplanagem, demolição e limpeza de lotes <span class="text-primary">com qualidade e pontualidade.</span></h1>
-            <p class="hero-desc reveal" data-delay="320">Há 15 anos preparando terrenos na região. Da demolição ao aterro, seu projeto começa com o pé direito.</p>
-            <div class="hero-cta-wrapper reveal" data-delay="440">
-              <button class="btn btn-primary btn-lg dig-button" onclick="window.open('https://wa.me/5531996686933?text=Olá!%20Gostaria%20de%20solicitar%20um%20orçamento%20sem%20compromisso.', '_blank')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                Chamar no WhatsApp
-              </button>
-              <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                <span class="hero-cta-note">Orçamento sem compromisso</span>
-                <span class="hero-badge">✦ 15 anos de história</span>
-              </div>
+            <!-- Hero (Lovable style) -->
+      <section id="inicio" class="lv-hero-section">
+        <!-- Background: video + slideshow -->
+        <div class="lv-hero-bg-container" aria-hidden="true" id="hero-bg-container">
+          <img src="./assets/service-earthworks.webp" alt="" class="lv-hero-slide" style="animation-delay: 0s" fetchpriority="high" />
+          <img src="./assets/service-demolition.webp" alt="" class="lv-hero-slide" style="animation-delay: 6s" loading="lazy" />
+          <img src="./assets/service-clearing.webp" alt="" class="lv-hero-slide" style="animation-delay: 12s" loading="lazy" />
+          <!-- Video injected by JS -->
+          
+          <!-- Overlays -->
+          <div class="lv-overlay-b"></div>
+          <div class="lv-overlay-r"></div>
+        </div>
+
+        <div class="lv-hero-content">
+          <div class="lv-hero-text-wrapper">
+            <p class="lv-hero-badge lv-hero-rise" style="animation-delay: 0.25s">
+              <span class="lv-badge-dot"></span> Sete Lagoas e região
+            </p>
+            <h1 class="lv-hero-title lv-hero-rise" style="animation-delay: 0.35s">
+              Sua obra começa com a <span class="text-primary">base certa.</span>
+            </h1>
+            <p class="lv-hero-desc lv-hero-rise" style="animation-delay: 0.45s">
+              Terraplanagem, aterro, demolição, limpeza de lotes e remoção de entulho — com planejamento, segurança e o equipamento certo para cada terreno.
+            </p>
+
+            <div class="lv-hero-cta-group lv-hero-rise" style="animation-delay: 0.55s">
+              <a href="https://wa.me/5531996686933?text=Olá!%20Gostaria%20de%20solicitar%20um%20orçamento%20sem%20compromisso." target="_blank" rel="noopener noreferrer" class="lv-btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="lv-btn-icon" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                Pedir orçamento grátis
+              </a>
+              <a href="#servicos" class="lv-btn-secondary">
+                Ver serviços
+              </a>
             </div>
-            <p class="hero-agenda reveal" data-delay="500">Atendemos um contrato por vez para garantir prazo e qualidade. Consulte a disponibilidade da agenda.</p>
+
+            <!-- Stats -->
+            <dl class="lv-hero-stats lv-hero-rise" style="animation-delay: 0.65s">
+              <div class="lv-stat-item">
+                <dt class="lv-stat-label">anos de experiência</dt>
+                <dd class="lv-stat-value">15</dd>
+              </div>
+              <div class="lv-stat-item">
+                <dt class="lv-stat-label">clientes atendidos</dt>
+                <dd class="lv-stat-value">100+</dd>
+              </div>
+              <div class="lv-stat-item">
+                <dt class="lv-stat-label">serviços completos</dt>
+                <dd class="lv-stat-value">6</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Scroll hint -->
+          <div class="lv-scroll-hint-wrapper">
+            <div class="lv-scroll-hint">
+              <div class="lv-scroll-dot"></div>
+            </div>
           </div>
         </div>
-        <a href="#servicos" class="scroll-down-btn" aria-label="Ver serviços">
-          Conheça os serviços
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-        </a>
       </section>
 
       <div class="hazard-stripe"></div>

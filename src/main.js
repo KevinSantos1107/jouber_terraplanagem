@@ -100,35 +100,25 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", updateProgress);
   updateProgress();
 
-  // ── Mobile Menu ──
-  const menuBtn = document.getElementById("mobile-menu-btn");
-  const mobileNav = document.getElementById("mobile-nav");
-  const mobileNavLinks = mobileNav.querySelectorAll("a");
-  
-  const toggleMenu = () => {
-    const expanded = menuBtn.getAttribute("aria-expanded") === "true";
-    menuBtn.setAttribute("aria-expanded", !expanded);
-    mobileNav.classList.toggle("open");
-  };
-  
-  menuBtn.addEventListener("click", toggleMenu);
-  mobileNavLinks.forEach(link => link.addEventListener("click", () => {
-    if (mobileNav.classList.contains("open")) toggleMenu();
-  }));
-  
-  window.addEventListener("resize", () => {
-    if (window.innerWidth >= 768 && mobileNav.classList.contains("open")) toggleMenu();
-  });
 
-  // ── Hero Image Loader ──
-  const heroImg = document.querySelector(".hero-bg");
-  if (heroImg) {
-    if (heroImg.complete) {
-      heroImg.classList.add("loaded");
-    } else {
-      heroImg.addEventListener("load", () => heroImg.classList.add("loaded"));
+  // ── Hero: inject video after hydration, respecting reduced-motion and saveData ──
+  const heroBgContainer = document.getElementById('hero-bg-container');
+  if (heroBgContainer) {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = navigator.connection && navigator.connection.saveData;
+    if (!prefersReduced && !saveData) {
+      const video = document.createElement('video');
+      video.id = 'lv-hero-video';
+      video.src = './assets/hero-loop-compact.mp4';
+      video.autoplay = true;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      heroBgContainer.appendChild(video);
     }
   }
+
 
   // ── Intersection Observer for Reveals ──
   const revealElements = document.querySelectorAll(".reveal, .reveal-list > *");
