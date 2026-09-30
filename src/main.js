@@ -450,6 +450,27 @@ document.addEventListener("DOMContentLoaded", () => {
       after.style.setProperty("--reveal", `${val}%`);
       line.style.setProperty("--reveal", `${val}%`);
     });
+
+    // Pointer-based drag that doesn't interfere with page scroll
+    container.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      const rect = container.getBoundingClientRect();
+      const updateFromPointer = (ev) => {
+        const x = ((ev.clientX - rect.left) / rect.width) * 100;
+        const clamped = Math.max(0, Math.min(100, x));
+        slider.value = clamped;
+        after.style.setProperty("--reveal", `${clamped}%`);
+        line.style.setProperty("--reveal", `${clamped}%`);
+      };
+      updateFromPointer(e);
+      const onMove = (ev) => updateFromPointer(ev);
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    });
   });
 
   // Phone mask
