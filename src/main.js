@@ -1,4 +1,4 @@
-﻿import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
+import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
 
 const FORM_ENDPOINT = import.meta.env?.VITE_FORM_ENDPOINT || '';
 
@@ -483,116 +483,178 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ── Compare Sliders ──
-  const sliders = document.querySelectorAll(".compare-slider");
-  
-  // Observer simplificado para animacao inicial usando classe CSS
-  const compareObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const slider = entry.target;
-        const container = slider.parentElement;
-        
-        // Se o usuario ja estiver interagindo, aborta animacao inicial
-        if (container.classList.contains("compare-dragging")) return;
-        
-        container.classList.add("is-animating");
-        
-        const after = container.querySelector(".compare-after");
-        const line = container.querySelector(".compare-line");
-        
-        // Sequencia: vai a 75% e volta a 50%
-        setTimeout(() => {
-          if (container.classList.contains("compare-dragging")) return;
-          after.style.setProperty("--reveal", "75%");
-          line.style.setProperty("--reveal", "75%");
-          slider.value = 75;
-          
-          setTimeout(() => {
-            if (container.classList.contains("compare-dragging")) return;
-            after.style.setProperty("--reveal", "50%");
-            line.style.setProperty("--reveal", "50%");
-            slider.value = 50;
-            
-            setTimeout(() => {
-              container.classList.remove("is-animating");
-            }, 600);
-          }, 600);
-        }, 100);
-        
-        compareObserver.unobserve(slider);
-      }
-    });
-  }, { threshold: 0.5 });
+  // ── Compare Sliders ──────────────────────────────────────────────────────
+  // Abordagem profissional:
+  //  • Desktop: pointer events direto no container — sem arrastar imagem.
+  //  • Mobile: deteccao de direcao de gesto (touchstart + touchmove) para
+  //    distinguir scroll vertical de drag horizontal. So ativa o drag se o
+  //    primeiro movimento for predominantemente horizontal.
+  //  • Animacao de hint (entrada): usa classe is-hinting com transicao CSS,
+  //    sem interferir com a interacao do usuario.
+  // ─────────────────────────────────────────────────────────────────────────
 
-  sliders.forEach(slider => {
-    const container = slider.parentElement;
-    const after = container.querySelector(".compare-after");
-    const line = container.querySelector(".compare-line");
-    
+  document.querySelectorAll(".compare-container").forEach((container) => {
+    const after  = container.querySelector(".compare-after");
+    const line   = container.querySelector(".compare-line");
+    const slider = container.querySelector(".compare-slider");
+
+    // Skeleton: remove quando a imagem de fundo carregar
     const bgImg = container.querySelector(".compare-img-bg");
     if (bgImg) {
-      if (bgImg.complete) bgImg.classList.remove("skeleton");
-      else bgImg.addEventListener("load", () => bgImg.classList.remove("skeleton"));
+      const removeSkeleton = () => bgImg.classList.remove("skeleton");
+      if (bgImg.complete) removeSkeleton();
+      else bgImg.addEventListener("load", removeSkeleton, { once: true });
     }
-    
-    compareObserver.observe(slider);
 
-    const applyValue = (val) => {
-      after.style.setProperty("--reveal", `${val}%`);
-      line.style.setProperty("--reveal", `${val}%`);
-      slider.value = val;
-    };
-
-    slider.addEventListener("input", (e) => applyValue(e.target.value));
-
-    // Drag isolado e tolerante a scroll
-    let _dragging = false;
-
-    const _getPointerVal = (ev) => {
-      const rect = container.getBoundingClientRect();
-      const x = ((ev.clientX - rect.left) / rect.width) * 100;
-      return Math.max(0, Math.min(100, x));
-    };
-
-    container.addEventListener("pointerdown", (e) => {
-      if (e.target.closest("a, button")) return;
-      
-      const x = _getPointerVal(e);
-      const currentVal = Number(slider.value);
-      
-      // UX CRITICO: so inicia o drag se o usuario tocar PERTO da linha divisoria (distancia < 20%).
-      // Isso permite que ele toque nas bordas da imagem para rolar a pagina no celular
-      // sem que o slider "pule" acidentalmente para o dedo dele.
-      if (Math.abs(x - currentVal) > 20) {
-        return; 
-      }
-      
-      _dragging = true;
-      container.setPointerCapture(e.pointerId);
-      container.classList.add("compare-dragging");
-      container.classList.remove("is-animating"); // aborta animacao se estiver rodando
-      
-      applyValue(x);
+    // Impede arrasto nativo de imagens (desktop)
+    container.querySelectorAll("img").forEach((img) => {
+      img.setAttribute("draggable", "false");
+      img.addEventListener("dragstart", (e) => e.preventDefault(), { passive: false });
     });
+
+    // ── Aplicar valor (0-100) ao slider ──────────────────────────────────
+    const applyValue = (val) => {
+      const clamped = Math.max(0, Math.min(100, val));
+      const pct = `${clamped}%`;
+      after.style.setProperty("--reveal", pct);
+      line.style.setProperty("--reveal", pct);
+      if (slider) slider.value = clamped;
+    };
+
+    // Calcular valor percentual a partir de coordenada X do ponteiro
+    const getValFromEvent = (clientX) => {
+      const rect = container.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    };
+
+    // ── Estado de drag ───────────────────────────────────────────────────
+    let isDragging = false;
+
+    const startDrag = (clientX, pointerId) => {
+      isDragging = true;
+      container.classList.add("is-dragging");
+      container.classList.remove("is-hinting");
+      if (pointerId != null && container.setPointerCapture) {
+        try { container.setPointerCapture(pointerId); } catch (_) {}
+      }
+      applyValue(getValFromEvent(clientX));
+    };
+
+    const moveDrag = (clientX) => {
+      if (!isDragging) return;
+      applyValue(getValFromEvent(clientX));
+    };
+
+    const stopDrag = (pointerId) => {
+      if (!isDragging) return;
+      isDragging = false;
+      container.classList.remove("is-dragging");
+      if (pointerId != null && container.releasePointerCapture) {
+        try { container.releasePointerCapture(pointerId); } catch (_) {}
+      }
+    };
+
+    // ── Pointer Events (Desktop + stylus) ───────────────────────────────
+    // Usamos pointerType para distinguir mouse/pen de touch.
+    // Touch e tratado separadamente abaixo para ter deteccao de direcao.
+    container.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch") return; // touch via touchstart
+      if (e.target.closest("a, button")) return;
+      e.preventDefault();
+      startDrag(e.clientX, e.pointerId);
+    }, { passive: false });
 
     container.addEventListener("pointermove", (e) => {
-      if (!_dragging || !container.hasPointerCapture(e.pointerId)) return;
-      applyValue(_getPointerVal(e));
-    });
+      if (e.pointerType === "touch") return;
+      if (!isDragging) return;
+      e.preventDefault();
+      moveDrag(e.clientX);
+    }, { passive: false });
 
-    const _stopDrag = (e) => {
-      if (!_dragging) return;
-      _dragging = false;
-      container.classList.remove("compare-dragging");
-      if (container.hasPointerCapture(e.pointerId)) {
-        container.releasePointerCapture(e.pointerId);
+    container.addEventListener("pointerup",     (e) => { if (e.pointerType !== "touch") stopDrag(e.pointerId); });
+    container.addEventListener("pointercancel", (e) => { if (e.pointerType !== "touch") stopDrag(e.pointerId); });
+    container.addEventListener("pointerleave",  (e) => { if (e.pointerType !== "touch" && isDragging) stopDrag(e.pointerId); });
+
+    // ── Touch Events (Mobile) ────────────────────────────────────────────
+    // Detecta direcao do primeiro gesto: horizontal -> drag; vertical -> scroll.
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchDecided = false; // ja decidimos se e scroll ou drag?
+    let touchIsDrag  = false; // conclusao: e drag?
+
+    container.addEventListener("touchstart", (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      touchStartX  = t.clientX;
+      touchStartY  = t.clientY;
+      touchDecided = false;
+      touchIsDrag  = false;
+    }, { passive: true });
+
+    container.addEventListener("touchmove", (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const dx = Math.abs(t.clientX - touchStartX);
+      const dy = Math.abs(t.clientY - touchStartY);
+
+      if (!touchDecided) {
+        // Precisa de pelo menos 6px de deslocamento para decidir a direcao
+        if (dx < 6 && dy < 6) return;
+        touchDecided = true;
+        // Horizontal predominante -> drag
+        touchIsDrag = dx > dy;
+        if (touchIsDrag) {
+          startDrag(t.clientX, null);
+        }
       }
-    };
 
-    container.addEventListener("pointerup", _stopDrag);
-    container.addEventListener("pointercancel", _stopDrag);
+      if (!touchIsDrag) return; // e scroll vertical, nao interfere
+
+      e.preventDefault(); // agora sim, impede o scroll
+      moveDrag(t.clientX);
+    }, { passive: false });
+
+    container.addEventListener("touchend",    () => { if (touchIsDrag) stopDrag(null); touchIsDrag = false; touchDecided = false; }, { passive: true });
+    container.addEventListener("touchcancel", () => { if (touchIsDrag) stopDrag(null); touchIsDrag = false; touchDecided = false; }, { passive: true });
+
+    // ── Acessibilidade: teclado via input[range] ─────────────────────────
+    if (slider) {
+      slider.style.pointerEvents = "auto"; // habilita foco de teclado
+      slider.addEventListener("input", (e) => applyValue(Number(e.target.value)));
+      // Ao focar no slider pelo teclado, sinaliza visualmente
+      slider.addEventListener("focus", () => container.classList.add("is-dragging"));
+      slider.addEventListener("blur",  () => container.classList.remove("is-dragging"));
+    }
+
+    // ── Hint animation (IntersectionObserver) ───────────────────────────
+    const hintObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || isDragging) return;
+
+        container.classList.add("is-hinting");
+
+        // Sequencia: 50% -> 72% -> 50% (ida e volta suave)
+        setTimeout(() => {
+          if (isDragging) return;
+          applyValue(72);
+
+          setTimeout(() => {
+            if (isDragging) return;
+            applyValue(50);
+
+            setTimeout(() => {
+              container.classList.remove("is-hinting");
+            }, 600);
+          }, 600);
+        }, 120);
+
+        hintObserver.unobserve(container);
+      });
+    }, { threshold: 0.5 });
+
+    hintObserver.observe(container);
   });
+
 
   // Phone mask
   const phoneInput = document.getElementById('phone');
@@ -752,3 +814,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 
+
+// Hero: palavra rotativa no título (fade + slide), respeitando prefers-reduced-motion
+(function () {
+  const rotator = document.querySelector("[data-rotator]");
+  if (!rotator) return;
+  const words = Array.from(rotator.querySelectorAll(".hero__rotator-word"));
+  if (words.length < 2) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const INTERVAL = 3200;
+  let index = 0;
+  let timer = null;
+
+  const next = () => {
+    const current = words[index];
+    index = (index + 1) % words.length;
+    const incoming = words[index];
+    current.classList.remove("is-active");
+    current.classList.add("is-leaving");
+    current.setAttribute("aria-hidden", "true");
+    incoming.classList.add("is-active");
+    incoming.removeAttribute("aria-hidden");
+    setTimeout(() => current.classList.remove("is-leaving"), 700);
+  };
+
+  const start = () => { if (!timer) timer = setInterval(next, INTERVAL); };
+  const stop = () => { clearInterval(timer); timer = null; };
+
+  // Pausa quando a aba está em segundo plano
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+  start();
+})();
