@@ -734,6 +734,24 @@ document.addEventListener("DOMContentLoaded", () => {
     diffObserver.observe(differentialsSection);
   }
 
+  // ── Why Card Click Animations ──
+  const whyCards = document.querySelectorAll('.why-card');
+  if (whyCards.length > 0) {
+    whyCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasSelected = card.classList.contains('is-selected');
+        whyCards.forEach(c => c.classList.remove('is-selected'));
+        if (!wasSelected) {
+          card.classList.add('is-selected');
+        }
+      });
+    });
+    document.addEventListener('click', () => {
+      whyCards.forEach(c => c.classList.remove('is-selected'));
+    });
+  }
+
   // ── Stats Render ──
   const statsGrid = document.getElementById('stats-grid');
   if (statsGrid && stats) {
