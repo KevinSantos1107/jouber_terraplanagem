@@ -330,13 +330,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const dialog = document.getElementById("service-dialog");
   const dialogClose = document.getElementById("dialog-close");
   if (dialog && dialogClose) {
-    dialogClose.addEventListener("click", () => {
-      dialog.close();
-    });
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) {
+    const closeDialog = () => {
+      dialog.classList.add("is-closing");
+      dialog.addEventListener("animationend", () => {
+        dialog.classList.remove("is-closing");
         dialog.close();
-      }
+      }, { once: true });
+    };
+    dialogClose.addEventListener("click", closeDialog);
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) closeDialog();
     });
   }
 
@@ -558,8 +561,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Usamos pointerType para distinguir mouse/pen de touch.
     // Touch e tratado separadamente abaixo para ter deteccao de direcao.
     container.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "touch") return; // touch via touchstart
+      if (e.pointerType === "touch") return;
       if (e.target.closest("a, button")) return;
+      if (wasScrolling) return; // toque causado por scroll — ignora
       e.preventDefault();
       startDrag(e.clientX, e.pointerId);
     }, { passive: false });
@@ -576,11 +580,15 @@ document.addEventListener("DOMContentLoaded", () => {
     container.addEventListener("pointerleave",  (e) => { if (e.pointerType !== "touch" && isDragging) stopDrag(e.pointerId); });
 
     // ── Touch Events (Mobile) ────────────────────────────────────────────
-    // Detecta direcao do primeiro gesto: horizontal -> drag; vertical -> scroll.
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchDecided = false; // ja decidimos se e scroll ou drag?
-    let touchIsDrag  = false; // conclusao: e drag?
+    // wasScrolling: se o usuario rolou a tela com o dedo sobre o container,
+    // bloqueia o proximo pointerdown por 400ms para evitar mover a barra
+    // acidentalmente no fim do scroll.
+    let touchStartX   = 0;
+    let touchStartY   = 0;
+    let touchDecided  = false;
+    let touchIsDrag   = false;
+    let wasScrolling  = false;
+    let scrollTimer   = null;
 
     container.addEventListener("touchstart", (e) => {
       if (e.touches.length !== 1) return;
@@ -589,6 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
       touchStartY  = t.clientY;
       touchDecided = false;
       touchIsDrag  = false;
+      wasScrolling = false;
     }, { passive: true });
 
     container.addEventListener("touchmove", (e) => {
@@ -597,26 +606,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const dx = Math.abs(t.clientX - touchStartX);
       const dy = Math.abs(t.clientY - touchStartY);
 
+      // Se o dedo se moveu verticalmente de forma significativa, marca como scroll
+      if (dy > 12) wasScrolling = true;
+
       if (!touchDecided) {
-        // Aguarda 10px para evitar micro-jitter
-        if (dx < 10 && dy < 10) return;
+        if (dx < 18 && dy < 18) return;
         touchDecided = true;
-        // Drag SOMENTE se horizontal for mais que o dobro do vertical
-        // Evita que scroll vertical com leve tremor acione a barra
-        touchIsDrag = dx > dy * 2;
+        touchIsDrag = dx > dy * 3;
         if (touchIsDrag) {
           startDrag(t.clientX, null);
         }
       }
 
-      if (!touchIsDrag) return; // e scroll vertical, nao interfere
+      if (!touchIsDrag) return;
 
-      e.preventDefault(); // agora sim, impede o scroll
+      e.preventDefault();
       moveDrag(t.clientX);
     }, { passive: false });
 
-    container.addEventListener("touchend",    () => { if (touchIsDrag) stopDrag(null); touchIsDrag = false; touchDecided = false; }, { passive: true });
-    container.addEventListener("touchcancel", () => { if (touchIsDrag) stopDrag(null); touchIsDrag = false; touchDecided = false; }, { passive: true });
+    container.addEventListener("touchend", () => {
+      if (touchIsDrag) stopDrag(null);
+      touchIsDrag  = false;
+      touchDecided = false;
+      // Se havia scroll, mantem o bloqueio por 400ms apos levantar o dedo
+      if (wasScrolling) {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => { wasScrolling = false; }, 400);
+      }
+    }, { passive: true });
+    container.addEventListener("touchcancel", () => {
+      if (touchIsDrag) stopDrag(null);
+      touchIsDrag  = false;
+      touchDecided = false;
+      wasScrolling = false;
+    }, { passive: true });
 
     // ── Acessibilidade: teclado via input[range] ─────────────────────────
     if (slider) {
@@ -657,15 +680,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  // Phone mask
-  const phoneInput = document.getElementById('phone');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', function (e) {
-      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-      e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-    });
-  }
-
   // ── Form Submission ──
   const form = document.getElementById("quote-form");
   if (form) {
@@ -680,38 +694,25 @@ document.addEventListener("DOMContentLoaded", () => {
         form.reportValidity();
         return;
       }
-      
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
+
+      const name    = document.getElementById("name").value.trim();
       const service = document.getElementById("service").value;
-      const city = document.getElementById("city")?.value.trim();
-      
+      const city    = document.getElementById("city")?.value.trim();
+
       submitBtn.disabled = true;
       btnText.style.display = "none";
       spinner.style.display = "inline-block";
-      
-      let msg = `Olá! Meu nome é ${name}. Meu WhatsApp é ${phone}. Gostaria de um orçamento para ${service}.`;
-      if (city) msg += ` A cidade/bairro é ${city}.`;
-      msg += ` Contato via site.`;
-      
-      const formData = { name, phone, service, city, source: 'site' };
 
-      // Optional async fetch
-      if (FORM_ENDPOINT) {
-        fetch(FORM_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        }).catch(err => console.error(err));
-      }
+      let msg = `Olá! Me chamo *${name}* e gostaria de solicitar um orçamento.\n\n`;
+      msg += `*Serviço:* ${service}\n`;
+      if (city) msg += `*Local:* ${city}\n`;
+      msg += `\nEntrei em contato pelo site da Jouber Terraplanagem.`;
 
       setTimeout(() => {
         window.open(whatsappUrl(msg), "_blank");
-        
         submitBtn.disabled = false;
         btnText.style.display = "inline-flex";
         spinner.style.display = "none";
-        
         formSuccess.style.display = "block";
       }, 400);
     });
@@ -849,54 +850,87 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 
-// FAQ: animacao suave de abrir e fechar
+// FAQ: animacao suave + accordion exclusivo (so um aberto por vez)
 (function () {
-  function initFaqItem(details) {
-    const summary = details.querySelector("summary");
-    if (!summary) return;
+  var items = Array.from(document.querySelectorAll(".faq details"));
 
-    let anim = null;
-    let isOpen = details.open;
+  // Fecha um item com animacao; chama onDone() ao terminar (opcional)
+  function closeItem(details, summaryEl, state, onDone) {
+    if (!state.isOpen) { if (onDone) onDone(); return; }
+    if (state.anim) { state.anim.cancel(); state.anim = null; }
+    var startH = details.offsetHeight;
+    var endH   = summaryEl.offsetHeight;
+    details.style.overflow = "hidden";
+    details.style.height   = startH + "px";
+    state.anim = details.animate(
+      { height: [startH + "px", endH + "px"] },
+      { duration: 280, easing: "cubic-bezier(0.4,0,0.2,1)" }
+    );
+    state.anim.onfinish = function () {
+      details.open = false;
+      state.isOpen = false;
+      details.style.height = details.style.overflow = "";
+      state.anim = null;
+      if (onDone) onDone();
+    };
+  }
+
+  // Abre um item com animacao
+  function openItem(details, summaryEl, state) {
+    if (state.anim) { state.anim.cancel(); state.anim = null; }
+    details.open = true;
+    state.isOpen = true;
+    var startH = summaryEl.offsetHeight;
+    var endH   = details.offsetHeight;
+    details.style.overflow = "hidden";
+    details.style.height   = startH + "px";
+    state.anim = details.animate(
+      { height: [startH + "px", endH + "px"] },
+      { duration: 320, easing: "cubic-bezier(0.4,0,0.2,1)" }
+    );
+    state.anim.onfinish = function () {
+      details.style.height = details.style.overflow = "";
+      state.anim = null;
+    };
+  }
+
+  // Mapa de estado por elemento
+  var stateMap = new Map();
+  items.forEach(function (details) {
+    stateMap.set(details, { isOpen: details.open, anim: null });
+  });
+
+  items.forEach(function (details) {
+    var summary = details.querySelector("summary");
+    if (!summary) return;
+    var state = stateMap.get(details);
 
     summary.addEventListener("click", function (e) {
       e.preventDefault();
-      if (anim) { anim.cancel(); anim = null; }
 
-      if (!isOpen) {
-        // ABRIR
-        details.open = true;
-        isOpen = true;
-        const startH = summary.offsetHeight;
-        const endH   = details.offsetHeight;
-        details.style.overflow = "hidden";
-        details.style.height   = startH + "px";
-        anim = details.animate(
-          { height: [startH + "px", endH + "px"] },
-          { duration: 320, easing: "cubic-bezier(0.4,0,0.2,1)" }
-        );
-        anim.onfinish = function () {
-          details.style.height = details.style.overflow = "";
-          anim = null;
-        };
+      if (state.isOpen) {
+        // Clicar no aberto: so fecha ele
+        closeItem(details, summary, state);
       } else {
-        // FECHAR
-        const startH = details.offsetHeight;
-        const endH   = summary.offsetHeight;
-        details.style.overflow = "hidden";
-        details.style.height   = startH + "px";
-        anim = details.animate(
-          { height: [startH + "px", endH + "px"] },
-          { duration: 280, easing: "cubic-bezier(0.4,0,0.2,1)" }
-        );
-        anim.onfinish = function () {
-          details.open = false;
-          isOpen = false;
-          details.style.height = details.style.overflow = "";
-          anim = null;
-        };
+        // Abrir este: primeiro fecha o que estiver aberto
+        var openDetails = null;
+        items.forEach(function (other) {
+          if (other !== details && stateMap.get(other).isOpen) {
+            openDetails = other;
+          }
+        });
+
+        if (openDetails) {
+          var otherSummary = openDetails.querySelector("summary");
+          var otherState   = stateMap.get(openDetails);
+          // Fecha o anterior e abre o novo AO MESMO TEMPO (simultaneo)
+          closeItem(openDetails, otherSummary, otherState);
+          openItem(details, summary, state);
+        } else {
+          openItem(details, summary, state);
+        }
       }
     });
-  }
-
-  document.querySelectorAll(".faq details").forEach(initFaqItem);
+  });
 })();
+
