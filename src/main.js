@@ -598,11 +598,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const dy = Math.abs(t.clientY - touchStartY);
 
       if (!touchDecided) {
-        // Precisa de pelo menos 6px de deslocamento para decidir a direcao
-        if (dx < 6 && dy < 6) return;
+        // Aguarda 10px para evitar micro-jitter
+        if (dx < 10 && dy < 10) return;
         touchDecided = true;
-        // Horizontal predominante -> drag
-        touchIsDrag = dx > dy;
+        // Drag SOMENTE se horizontal for mais que o dobro do vertical
+        // Evita que scroll vertical com leve tremor acione a barra
+        touchIsDrag = dx > dy * 2;
         if (touchIsDrag) {
           startDrag(t.clientX, null);
         }
@@ -845,4 +846,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // Pausa quando a aba está em segundo plano
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
   start();
+})();
+
+
+// FAQ: animacao suave de abrir e fechar
+(function () {
+  function initFaqItem(details) {
+    const summary = details.querySelector("summary");
+    if (!summary) return;
+
+    let anim = null;
+    let isOpen = details.open;
+
+    summary.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (anim) { anim.cancel(); anim = null; }
+
+      if (!isOpen) {
+        // ABRIR
+        details.open = true;
+        isOpen = true;
+        const startH = summary.offsetHeight;
+        const endH   = details.offsetHeight;
+        details.style.overflow = "hidden";
+        details.style.height   = startH + "px";
+        anim = details.animate(
+          { height: [startH + "px", endH + "px"] },
+          { duration: 320, easing: "cubic-bezier(0.4,0,0.2,1)" }
+        );
+        anim.onfinish = function () {
+          details.style.height = details.style.overflow = "";
+          anim = null;
+        };
+      } else {
+        // FECHAR
+        const startH = details.offsetHeight;
+        const endH   = summary.offsetHeight;
+        details.style.overflow = "hidden";
+        details.style.height   = startH + "px";
+        anim = details.animate(
+          { height: [startH + "px", endH + "px"] },
+          { duration: 280, easing: "cubic-bezier(0.4,0,0.2,1)" }
+        );
+        anim.onfinish = function () {
+          details.open = false;
+          isOpen = false;
+          details.style.height = details.style.overflow = "";
+          anim = null;
+        };
+      }
+    });
+  }
+
+  document.querySelectorAll(".faq details").forEach(initFaqItem);
 })();
