@@ -1,4 +1,4 @@
-import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
+﻿import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
 
 const FORM_ENDPOINT = import.meta.env?.VITE_FORM_ENDPOINT || '';
 
@@ -167,6 +167,48 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", updateProgress, { passive: true });
   window.addEventListener("resize", updateProgress);
   updateProgress();
+
+  // ── "Topo": clique na logo (e no link do rodapé) rola sempre o máximo para
+  // cima (topo absoluto da página). O scrollTo(0) substitui a âncora #inicio,
+  // que deixava a página presa numa meia-rolagem dentro da hero. ──
+  document.querySelectorAll('a[href="#inicio"]').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    });
+  });
+
+  // ── Header: sempre fixo no topo (position:fixed no CSS).
+  // Começa transparente e recebe fundo escuro (is-stuck) quando o usuario
+  // rola para alem da altura do header. A variavel --header-stuck-h e usada
+  // pelo .hero para calcular sua min-height corretamente.
+  const heroHeader = document.querySelector(".hero__header");
+  if (heroHeader) {
+    const STICK_THRESHOLD = 10; // px — aplica fundo apos essa rolagem
+    const UNSTICK_AT = 4;       // px — remove fundo apenas quando quase no topo
+    const setStuck = (stuck) => heroHeader.classList.toggle("is-stuck", stuck);
+
+    // Mede e expoe a altura do header como CSS custom property no :root
+    const measureHeader = () => {
+      const h = heroHeader.getBoundingClientRect().height || heroHeader.offsetHeight;
+      document.documentElement.style.setProperty("--header-stuck-h", h + "px");
+    };
+
+    const syncStuck = () => {
+      const s = window.scrollY;
+      if (heroHeader.classList.contains("is-stuck")) {
+        if (s < UNSTICK_AT) setStuck(false);
+      } else if (s >= STICK_THRESHOLD) {
+        setStuck(true);
+      }
+    };
+
+    measureHeader();
+    window.addEventListener("load", measureHeader);
+    window.addEventListener("resize", () => { measureHeader(); syncStuck(); });
+    window.addEventListener("scroll", syncStuck, { passive: true });
+    syncStuck();
+  }
 
 
   // ── Hero: inject video after hydration, respecting reduced-motion and saveData ──
@@ -399,33 +441,39 @@ document.addEventListener("DOMContentLoaded", () => {
   // ── Compare Sliders ──
   const sliders = document.querySelectorAll(".compare-slider");
   
+  // Observer simplificado para animacao inicial usando classe CSS
   const compareObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const slider = entry.target;
         const container = slider.parentElement;
+        
+        // Se o usuario ja estiver interagindo, aborta animacao inicial
+        if (container.classList.contains("compare-dragging")) return;
+        
+        container.classList.add("is-animating");
+        
         const after = container.querySelector(".compare-after");
         const line = container.querySelector(".compare-line");
         
-        after.style.transition = "clip-path 0.5s ease-in-out";
-        line.style.transition = "left 0.5s ease-in-out";
-        
+        // Sequencia: vai a 75% e volta a 50%
         setTimeout(() => {
+          if (container.classList.contains("compare-dragging")) return;
           after.style.setProperty("--reveal", "75%");
           line.style.setProperty("--reveal", "75%");
           slider.value = 75;
           
           setTimeout(() => {
+            if (container.classList.contains("compare-dragging")) return;
             after.style.setProperty("--reveal", "50%");
             line.style.setProperty("--reveal", "50%");
             slider.value = 50;
             
             setTimeout(() => {
-              after.style.transition = "none";
-              line.style.transition = "none";
-            }, 500);
-          }, 500);
-        }, 500);
+              container.classList.remove("is-animating");
+            }, 600);
+          }, 600);
+        }, 100);
         
         compareObserver.unobserve(slider);
       }
@@ -445,32 +493,60 @@ document.addEventListener("DOMContentLoaded", () => {
     
     compareObserver.observe(slider);
 
-    slider.addEventListener("input", (e) => {
-      const val = e.target.value;
+    const applyValue = (val) => {
       after.style.setProperty("--reveal", `${val}%`);
       line.style.setProperty("--reveal", `${val}%`);
+      slider.value = val;
+    };
+
+    slider.addEventListener("input", (e) => applyValue(e.target.value));
+
+    // Drag isolado e tolerante a scroll
+    let _dragging = false;
+
+    const _getPointerVal = (ev) => {
+      const rect = container.getBoundingClientRect();
+      const x = ((ev.clientX - rect.left) / rect.width) * 100;
+      return Math.max(0, Math.min(100, x));
+    };
+
+    container.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("a, button")) return;
+      
+      const x = _getPointerVal(e);
+      const currentVal = Number(slider.value);
+      
+      // UX CRITICO: so inicia o drag se o usuario tocar PERTO da linha divisoria (distancia < 20%).
+      // Isso permite que ele toque nas bordas da imagem para rolar a pagina no celular
+      // sem que o slider "pule" acidentalmente para o dedo dele.
+      if (Math.abs(x - currentVal) > 20) {
+        return; 
+      }
+      
+      _dragging = true;
+      container.setPointerCapture(e.pointerId);
+      container.classList.add("compare-dragging");
+      container.classList.remove("is-animating"); // aborta animacao se estiver rodando
+      
+      applyValue(x);
     });
 
-    // Pointer-based drag that doesn't interfere with page scroll
-    container.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      const rect = container.getBoundingClientRect();
-      const updateFromPointer = (ev) => {
-        const x = ((ev.clientX - rect.left) / rect.width) * 100;
-        const clamped = Math.max(0, Math.min(100, x));
-        slider.value = clamped;
-        after.style.setProperty("--reveal", `${clamped}%`);
-        line.style.setProperty("--reveal", `${clamped}%`);
-      };
-      updateFromPointer(e);
-      const onMove = (ev) => updateFromPointer(ev);
-      const onUp = () => {
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("pointerup", onUp);
-      };
-      window.addEventListener("pointermove", onMove);
-      window.addEventListener("pointerup", onUp);
+    container.addEventListener("pointermove", (e) => {
+      if (!_dragging || !container.hasPointerCapture(e.pointerId)) return;
+      applyValue(_getPointerVal(e));
     });
+
+    const _stopDrag = (e) => {
+      if (!_dragging) return;
+      _dragging = false;
+      container.classList.remove("compare-dragging");
+      if (container.hasPointerCapture(e.pointerId)) {
+        container.releasePointerCapture(e.pointerId);
+      }
+    };
+
+    container.addEventListener("pointerup", _stopDrag);
+    container.addEventListener("pointercancel", _stopDrag);
   });
 
   // Phone mask

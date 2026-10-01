@@ -25,7 +25,8 @@
   --earth: #1e1915;
 
   /* Header height tokens — used by both header and hero */
-  --header-h: 4rem;   /* 64px mobile */
+  --header-h: 4rem;       /* 64px mobile */
+  --header-stuck-h: 4rem; /* fallback antes do JS medir; atualizado pelo JS */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -49,16 +50,13 @@ button:active, a:active {
   opacity: 0.9;
   transition: transform 150ms ease, opacity 150ms ease;
 }
-html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; height: 100%; position: relative; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: var(--font-body);
   background-color: var(--background);
   color: var(--foreground);
   line-height: 1.5;
   overflow-x: hidden;
-  width: 100%;
-  height: 100%;
-  position: relative;
   margin: 0;
   padding: 0;
 }
@@ -849,10 +847,18 @@ header {
 @media (min-width: 768px) { .compare-header h3 { font-size: 2.25rem; } }
 .compare-header span { font-size: 0.75rem; color: var(--muted-foreground); }
 .compare-container { position: relative; aspect-ratio: 3/2; touch-action: pan-y; overflow: hidden; background-color: var(--muted); border: 4px solid var(--muted); border-radius: var(--radius); }
+/* Enquanto arrasta: desativa seleção e muda cursor, mas não trava scroll */
+.compare-container.compare-dragging { cursor: ew-resize; user-select: none; -webkit-user-select: none; }
+
 .compare-img-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s; }
 .compare-after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--reveal)); }
 .compare-after img { width: 100%; height: 100%; object-fit: cover; }
 .compare-line { position: absolute; top: 0; bottom: 0; width: 3px; background-color: var(--primary); left: var(--reveal); transform: translateX(-50%); pointer-events: none; z-index: 10; }
+
+/* Transições apenas quando a classe is-animating estiver ativa (anim. inicial) */
+.is-animating .compare-after { transition: clip-path 0.5s ease-in-out; }
+.is-animating .compare-line { transition: left 0.5s ease-in-out; }
+
 .compare-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background-color: var(--primary); color: var(--primary-foreground); border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
 .compare-badge { position: absolute; bottom: 1rem; background-color: rgba(255,255,255,0.9); color: var(--foreground); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 0.375rem 0.75rem; z-index: 5; border-radius: 2px; }
 .badge-left { left: 1rem; }
@@ -1077,11 +1083,15 @@ details p { padding: 0 1rem 1.5rem 0; font-size: 1rem; color: var(--muted-foregr
   max-width: calc(100vw - 2rem);
   text-decoration: none;
   
-  /* Initial hidden state for fade-in/out */
+  /* Initial hidden state: apenas fade, SEM deslocamento vertical.
+     O antigo translate(-50%, 15px) fazia o botão "descer" 15px toda vez
+     que a rolagem para cima cruzava o limite de 15% da altura da tela
+     (classe .visible removida). A posição agora é idêntica em qualquer
+     direção de rolagem — só a opacidade muda. */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate(-50%, 15px);
+  transform: translate(-50%, 0);
   transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
 }
 .floating-whatsapp:hover {
@@ -1106,7 +1116,7 @@ details p { padding: 0 1rem 1.5rem 0; font-size: 1rem; color: var(--muted-foregr
     left: auto; 
     right: 2rem; 
     bottom: 2rem; 
-    transform: translateY(15px);
+    transform: translateY(0);
   } 
   .floating-whatsapp.visible {
     transform: translateY(0);
@@ -1192,10 +1202,14 @@ body {
    HERO E HEADER — AJUSTE FINO LOVABLE REFERENCE
    ========================================================================== */
 
-/* --- Kill global header styles on the hero header --- */
+/* --- Kill global header styles on the hero header ---
+   O header agora fica fora do <main class="hero"> e é sempre fixed,
+   começando transparente e ganhando fundo ao rolar. */
 header.hero__header {
-  position: relative !important;
-  top: auto !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -1232,13 +1246,23 @@ header.hero__header {
   color: #fb7c00 !important;
 }
 
-/* --- Main container --- */
+/* --- Main container ---
+   O header agora é um elemento irmão do .hero e é position: fixed.
+   A hero precisa ocupar a tela toda (min-height: 100svh) mas adicionar
+   padding-top equivalente à altura do header para que o conteúdo não fique
+   escondido por baixo dele. */
 .hero {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100svh;
   position: relative;
   overflow: hidden;
+  padding-top: var(--header-stuck-h, 4.125rem);
+}
+@media (min-width: 640px) {
+  .hero {
+    padding-top: var(--header-stuck-h, 7rem);
+  }
 }
 
 /* --- Background layers --- */
@@ -1323,19 +1347,42 @@ header.hero__header {
   font-family: 'Archivo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* --- Header (in-flow, not absolute) --- */
+/* --- Header — sempre fixo no topo, transparente até rolar --- */
 .hero__header {
-  position: relative !important;
-  z-index: 20;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  z-index: 95;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 20px 16px 0 !important; /* 16px mobile padding */
+  padding: 20px clamp(1rem, 4vw, 2.5rem) 0 !important;
   gap: 16px !important;
 }
 @media (min-width: 640px) {
   .hero__header {
-    padding: 32px 40px 0 !important;
+    padding-top: 32px !important;
+  }
+}
+
+/* --- Quando colado (is-stuck): fundo escuro aparece --- */
+header.hero__header.is-stuck {
+  background-color: rgba(20, 16, 12, 0.94) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  padding-inline: clamp(1rem, 4vw, 2.5rem) !important;
+}
+@media (min-width: 640px) {
+  header.hero__header.is-stuck {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
   }
 }
 
