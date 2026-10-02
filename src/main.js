@@ -714,7 +714,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let msg = `Olá! Me chamo *${name}* e gostaria de solicitar um orçamento.\n\n`;
       msg += `*Serviço:* ${service}\n`;
       if (city) msg += `*Local:* ${city}\n`;
-      msg += `\nEntrei em contato pelo site da Jouber Terraplanagem.`;
+      msg += `\nEntrei em contato pelo site de Jouber Terraplanagem.`;
 
       setTimeout(() => {
         window.open(whatsappUrl(msg), "_blank");
