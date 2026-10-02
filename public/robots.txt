@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://jouberterraplanagem.vercel.app/sitemap.xml
+
