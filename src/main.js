@@ -1,4 +1,4 @@
-import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats } from "./data/site.js";
+import { WHATSAPP_NUMBER, PHONE_TEL, sections, stats, videoPortfolio } from "./data/site.js";
 
 const FORM_ENDPOINT = import.meta.env?.VITE_FORM_ENDPOINT || '';
 
@@ -320,6 +320,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.open(wpUrl, "_blank");
       };
       
+      document.body.style.top = `-${window.scrollY}px`;
+      document.body.classList.add("no-scroll");
       dialog.showModal();
     });
     
@@ -340,6 +342,12 @@ document.addEventListener("DOMContentLoaded", () => {
     dialogClose.addEventListener("click", closeDialog);
     dialog.addEventListener("click", (e) => {
       if (e.target === dialog) closeDialog();
+    });
+    dialog.addEventListener("close", () => {
+      const scrollY = document.body.style.top;
+      document.body.classList.remove("no-scroll");
+      document.body.style.top = '';
+      window.scrollTo({ top: parseInt(scrollY || '0') * -1, behavior: 'instant' });
     });
   }
 
@@ -793,7 +801,287 @@ document.addEventListener("DOMContentLoaded", () => {
     const statsObserver = new IntersectionObserver(animateStats, { threshold: 0.4 });
     statsObserver.observe(statsGrid);
   }
+
+  // ── Render Video Portfolio ────────────────────────────────────────────────
+  const portfolioRoot = document.getElementById('portfolio-categories');
+  const lightbox      = document.getElementById('video-lightbox');
+  const vlbPlayer     = document.getElementById('vlb-player');
+  const vlbClose      = document.getElementById('vlb-close');
+  const vlbCategoryEl = lightbox?.querySelector('.vlb-category');
+  const vlbTitleEl    = lightbox?.querySelector('.vlb-title');
+  const vlbPrev       = document.getElementById('vlb-prev');
+  const vlbNext       = document.getElementById('vlb-next');
+
+  let currentVlbVideos = [];
+  let currentVlbIndex = 0;
+  let currentVlbCatName = '';
+
+  const loadVlbVideo = (index) => {
+    if (index < 0 || index >= currentVlbVideos.length) return;
+    currentVlbIndex = index;
+    const vid = currentVlbVideos[index];
+    vlbPlayer.src = vid.src;
+    if (vid.poster) vlbPlayer.poster = vid.poster;
+    if (vlbCategoryEl) vlbCategoryEl.textContent = currentVlbCatName;
+    if (vlbTitleEl)    vlbTitleEl.textContent    = vid.title || currentVlbCatName;
+    vlbPlayer.play().catch(() => {});
+
+    if (vlbPrev) vlbPrev.style.display = index === 0 ? 'none' : 'flex';
+    if (vlbNext) vlbNext.style.display = index === currentVlbVideos.length - 1 ? 'none' : 'flex';
+  };
+
+  if (vlbPrev) {
+    vlbPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loadVlbVideo(currentVlbIndex - 1);
+    });
+  }
+  if (vlbNext) {
+    vlbNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loadVlbVideo(currentVlbIndex + 1);
+    });
+  }
+
+  // Custom Player UI Logic
+  const videoWrap = lightbox?.querySelector('.vlb-video-wrap');
+  const centerPlay = document.getElementById('vlb-center-play');
+  const iconPlay = centerPlay?.querySelector('.icon-play');
+  const iconPause = centerPlay?.querySelector('.icon-pause');
+  const vlbProgressBar = document.getElementById('vlb-progress');
+  const timeDisplay = document.getElementById('vlb-time');
+  const muteBtn = document.getElementById('vlb-mute');
+  const iconVol = muteBtn?.querySelector('.icon-vol');
+  const iconMuted = muteBtn?.querySelector('.icon-muted');
+  const fsBtn = document.getElementById('vlb-fs');
+
+  let uiTimeout;
+  const showUI = () => {
+    if (!videoWrap) return;
+    videoWrap.classList.add('show-ui');
+    clearTimeout(uiTimeout);
+    
+    if (!vlbPlayer.paused) {
+      uiTimeout = setTimeout(() => {
+        videoWrap.classList.remove('show-ui');
+      }, 2500);
+    }
+  };
+
+  const togglePlay = (e) => {
+    if (e) e.stopPropagation();
+    if (vlbPlayer.paused) {
+      vlbPlayer.play();
+    } else {
+      vlbPlayer.pause();
+    }
+  };
+
+  const formatTime = (time) => {
+    if (isNaN(time)) return "0:00";
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  if (vlbPlayer) {
+    vlbPlayer.addEventListener('play', () => {
+      if(iconPlay) iconPlay.style.display = 'none';
+      if(iconPause) iconPause.style.display = 'block';
+      showUI();
+    });
+    vlbPlayer.addEventListener('pause', () => {
+      if(iconPlay) iconPlay.style.display = 'block';
+      if(iconPause) iconPause.style.display = 'none';
+      showUI();
+    });
+    vlbPlayer.addEventListener('timeupdate', () => {
+      if (vlbProgressBar && !vlbProgressBar.matches(':active')) {
+        vlbProgressBar.value = (vlbPlayer.currentTime / vlbPlayer.duration) * 100 || 0;
+      }
+      if (timeDisplay) timeDisplay.textContent = `${formatTime(vlbPlayer.currentTime)} / ${formatTime(vlbPlayer.duration)}`;
+    });
+    vlbPlayer.addEventListener('loadedmetadata', () => {
+      if (timeDisplay) timeDisplay.textContent = `0:00 / ${formatTime(vlbPlayer.duration)}`;
+    });
+    vlbPlayer.addEventListener('ended', showUI);
+    vlbPlayer.addEventListener('click', togglePlay);
+  }
+
+  if (centerPlay) centerPlay.addEventListener('click', togglePlay);
+
+  if (vlbProgressBar) {
+    vlbProgressBar.addEventListener('input', () => {
+      const time = (vlbProgressBar.value / 100) * vlbPlayer.duration;
+      vlbPlayer.currentTime = time;
+    });
+  }
+
+  if (muteBtn) {
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      vlbPlayer.muted = !vlbPlayer.muted;
+      if (vlbPlayer.muted) {
+        iconVol.style.display = 'none';
+        iconMuted.style.display = 'block';
+      } else {
+        iconVol.style.display = 'block';
+        iconMuted.style.display = 'none';
+      }
+    });
+  }
+
+  if (fsBtn) {
+    fsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) {
+        videoWrap.requestFullscreen?.() || videoWrap.webkitRequestFullscreen?.();
+      } else {
+        document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+      }
+    });
+  }
+
+  if (videoWrap) {
+    videoWrap.addEventListener('mousemove', showUI);
+    videoWrap.addEventListener('touchstart', showUI, { passive: true });
+    videoWrap.querySelector('.vlb-ui')?.addEventListener('click', (e) => {
+      if (e.target === videoWrap.querySelector('.vlb-ui')) {
+        togglePlay();
+      }
+    });
+  }
+
+  if (portfolioRoot && videoPortfolio) {
+    // Filter categories that have at least one video
+    const activeCategories = videoPortfolio.filter(cat => cat.videos && cat.videos.length > 0);
+
+    if (activeCategories.length === 0) {
+      // Show a placeholder message while videos are not yet uploaded
+      portfolioRoot.innerHTML = `
+        <div class="portfolio-placeholder reveal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4;margin:0 auto 1rem;display:block"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m10 8 6 4-6 4V8z"/></svg>
+          <p>Os vídeos dos serviços serão publicados em breve.</p>
+        </div>`;
+      // Re-observe for reveal animation
+      portfolioRoot.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    } else {
+      activeCategories.forEach((cat, ci) => {
+        // Category block
+        const section = document.createElement('div');
+        section.className = 'pf-category reveal';
+        section.style.setProperty('--delay', `${ci * 60}ms`);
+
+        section.innerHTML = `
+          <div class="pf-cat-header">
+            <span class="pf-cat-title">${cat.category}</span>
+            <span class="pf-cat-line"></span>
+          </div>
+          <div class="pf-grid"></div>`;
+
+        const grid = section.querySelector('.pf-grid');
+
+        cat.videos.forEach((vid, vi) => {
+          const card = document.createElement('button');
+          card.className = 'pf-card';
+          card.setAttribute('aria-label', `Assistir: ${vid.title || cat.category}`);
+          card.type = 'button';
+
+          card.innerHTML = `
+            <div class="pf-thumb">
+              ${vid.poster ? `<img src="${vid.poster}" alt="${vid.title || cat.category}" loading="lazy" decoding="async" />` : ''}
+              <div class="pf-scrim"></div>
+              <span class="pf-play" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+              </span>
+            </div>
+            <div class="pf-label">
+              <span class="pf-label-cat text-primary">${cat.category}</span>
+              <span class="pf-label-title">${vid.title || cat.category}</span>
+            </div>`;
+
+          card.addEventListener('click', () => {
+            if (!lightbox) return;
+            currentVlbVideos = cat.videos;
+            currentVlbCatName = cat.category;
+            loadVlbVideo(vi);
+            document.body.style.top = `-${window.scrollY}px`;
+            document.body.classList.add('no-scroll');
+            lightbox.showModal();
+          });
+
+          grid.appendChild(card);
+        });
+
+        // Drag to scroll logic
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let startXClick = 0;
+
+        grid.addEventListener('mousedown', (e) => {
+          isDown = true;
+          grid.classList.add('is-dragging');
+          startX = e.pageX - grid.offsetLeft;
+          scrollLeft = grid.scrollLeft;
+          startXClick = e.pageX;
+        });
+        grid.addEventListener('mouseleave', () => {
+          isDown = false;
+          grid.classList.remove('is-dragging');
+        });
+        grid.addEventListener('mouseup', () => {
+          isDown = false;
+          grid.classList.remove('is-dragging');
+        });
+        grid.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - grid.offsetLeft;
+          const walk = (x - startX) * 2; 
+          grid.scrollLeft = scrollLeft - walk;
+        });
+        // Prevent card click if dragging
+        grid.addEventListener('click', (e) => {
+          if (Math.abs(e.pageX - startXClick) > 5) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, { capture: true });
+
+        portfolioRoot.appendChild(section);
+        revealObserver.observe(section);
+      });
+    }
+  }
+
+  // ── Video Lightbox Close Logic ────────────────────────────────────────────
+  if (lightbox) {
+    const closeLightbox = () => {
+      vlbPlayer.pause();
+      vlbPlayer.src = '';
+      lightbox.close();
+    };
+
+    vlbClose?.addEventListener('click', closeLightbox);
+
+    // Click on backdrop closes the dialog
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // ESC key is handled natively by <dialog>, but we need to clear src
+    lightbox.addEventListener('close', () => {
+      vlbPlayer.pause();
+      vlbPlayer.src = '';
+      const scrollY = document.body.style.top;
+      document.body.classList.remove('no-scroll');
+      document.body.style.top = '';
+      window.scrollTo({ top: parseInt(scrollY || '0') * -1, behavior: 'instant' });
+    });
+  }
 });
+
 
 
 // Hero video logic
