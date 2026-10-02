@@ -905,7 +905,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (timeDisplay) timeDisplay.textContent = `0:00 / ${formatTime(vlbPlayer.duration)}`;
     });
     vlbPlayer.addEventListener('ended', showUI);
-    vlbPlayer.addEventListener('click', togglePlay);
   }
 
   if (centerPlay) centerPlay.addEventListener('click', togglePlay);
@@ -945,11 +944,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (videoWrap) {
     videoWrap.addEventListener('mousemove', showUI);
     videoWrap.addEventListener('touchstart', showUI, { passive: true });
-    videoWrap.querySelector('.vlb-ui')?.addEventListener('click', (e) => {
-      if (e.target === videoWrap.querySelector('.vlb-ui')) {
-        togglePlay();
-      }
-    });
   }
 
   if (portfolioRoot && videoPortfolio) {
